@@ -4,15 +4,6 @@ import * as Gopher from './gopher';
 
 export type ItemRenderer = (item: Gopher.Item) => string;
 
-export function renderItem(item: Gopher.Item, renderers=itemRenderers): string {
-  const renderer = renderers[item.type] ?? renderers.default;
-  return renderer(item);
-}
-
-export function render(items: Gopher.Item[], renderers=itemRenderers) {
-  return items.map(item => renderItem(item, renderers)).join('');
-}
-
 export function renderer(renderers=itemRenderers) {
   return transform.obj(function (item, enc, done) {
     this.push(renderItem(item, renderers));
@@ -20,29 +11,46 @@ export function renderer(renderers=itemRenderers) {
   });
 }
 
+export function renderItem(item: Gopher.Item, renderers=itemRenderers): string {
+  const renderer = renderers[item.type] ?? renderers.default;
+  return renderer(item);
+}
+
+export const renderItemType = (type:string, label:string, url?:string, icon?:string) => (`
+  <div class="item" type="${type}">
+    ${icon? `<span class="item-icon">${icon}</span>` : ''}
+    ${url? `<a class="item-link" href="${url}">` : ''}
+    <span class="item-label">${label}</span>
+    ${url? `</a>` : ''}
+  </div>
+`);
+
 export const infoItemRenderer: ItemRenderer = (item: Gopher.Item) => (
-  `<p>${item.label}</p>`
+  renderItemType(item.type, item.label)
 );
 
 export const errorItemRenderer: ItemRenderer = (item: Gopher.Item) => (
-  `<p>❌ ${item.label}</p>`
+  renderItemType(item.type, item.label, undefined, '❌')
 );
 
 export const directoryItemRenderer: ItemRenderer = (item: Gopher.Item) => (
-  `<p><a href="${item.url}">📁 ${item.label}</a></p>`
+  renderItemType(item.type, item.label, item.url, '📁')
 );
 
 export const fileItemRenderer: ItemRenderer = (item: Gopher.Item) => (
-  `<p><a href="${item.url}">📄 ${item.label}</a></p>`
+  renderItemType(item.type, item.label, item.url, '📄')
 );
 
 export const urlItemRenderer: ItemRenderer = (item: Gopher.Item) => (
-  `<p><a href="${item.url}">🌐 ${item.label}</a></p>`
+  renderItemType(item.type, item.label, item.url, '🌐')
 );
 
-export const searchItemRenderer: ItemRenderer = (item: Gopher.Item) => (
-  `<p>🔍 <input type="search" placeholder="${item.label}"></p>`
-);
+export const searchItemRenderer: ItemRenderer = (item: Gopher.Item) => (`
+  <div class="item">
+    <span class="item-icon">🔍</span>
+    <input type="search" placeholder="${item.label}">
+  </div>
+`);
 
 export const itemRenderers: {[type: string]: ItemRenderer} = {
   'default': infoItemRenderer,
@@ -74,14 +82,15 @@ $navBack.addEventListener('click', () => historyBack());
 $navForward.addEventListener('click', () => historyForward());
 
 $content.addEventListener('click', (event) => {
-  if ((<HTMLElement>event.target)!.tagName === 'A') {
-    const a = <HTMLAnchorElement>event.target;
-    if (a.href.match(/^gopher:\/\//)) {
-      historyPush(a.href);
-    } else if (a.href.match(/^https?:\/\//)) {
-      shell.openExternal(a.href);
-    }
-    event.preventDefault();
+  event.preventDefault();
+  const target = <HTMLElement>event.target;
+  const link = <HTMLAnchorElement>target.parentElement;
+  if (!link?.classList.contains('item-link')) return;
+
+  if (link.href.match(/^gopher:\/\//)) {
+    historyPush(link.href);
+  } else if (link.href.match(/^https?:\/\//)) {
+    shell.openExternal(link.href);
   }
 });
 

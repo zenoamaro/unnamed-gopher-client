@@ -63,6 +63,43 @@ html, body {
 }
 
 #content {
-  max-width: 500px;
+  max-width: 602px;
   margin: 0 auto;
+  font-family: "SF Mono", Menlo, Monaco, monospace;
+  font-size: 12px;
+}
+
+#content .item {
+  position: relative;
+  padding: 12px 48px;
+  border-radius: 8px;
+}
+
+#content .item:not([type="i"]):hover {
+  background: #EAF1F6;
+  cursor: pointer;
+}
+
+#content .item[type="i"] {
+  padding: 0 48px;
+}
+
+#content .item[type="i"] + .item:not([type="i"]),
+#content .item:not([type="i"]) + .item[type="i"] {
+  margin-top: 8px;
+}
+
+#content .item-icon {
+  position: absolute;
+  top: 6px;
+  left: 16px;
+  font-size: 16px;
+}
+
+#content .item-link {
+  text-decoration: none;
+}
+
+#content .item-label {
+  white-space: pre-wrap;
 }
