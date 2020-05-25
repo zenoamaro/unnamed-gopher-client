@@ -76,22 +76,26 @@ export const itemRenderers: {[type: string]: ItemRenderer} = {
 const $navBack = <HTMLButtonElement>document.getElementById('nav-back')!;
 const $navForward = <HTMLButtonElement>document.getElementById('nav-forward')!;
 const $navAddress = <HTMLInputElement>document.getElementById('nav-address')!;
-const $content = <HTMLElement>document.getElementById('content')!;
-
 $navBack.addEventListener('click', () => historyBack());
 $navForward.addEventListener('click', () => historyForward());
 
-$content.addEventListener('click', (event) => {
-  event.preventDefault();
-  const target = <HTMLElement>event.target;
-  const link = <HTMLAnchorElement>target.parentElement;
-  if (!link?.classList.contains('item-link')) return;
+const $panes = <NodeList>document.querySelectorAll('#viewport .viewport-pane');
+const $contents = <NodeList>document.querySelectorAll('#viewport .content');
 
-  if (link.href.match(/^gopher:\/\//)) {
-    historyPush(link.href);
-  } else if (link.href.match(/^https?:\/\//)) {
-    shell.openExternal(link.href);
-  }
+$contents.forEach(($content, i) => {
+  $content.addEventListener('click', (event) => {
+    event.preventDefault();
+    const target = <HTMLElement>event.target;
+    const link = <HTMLAnchorElement>target.parentElement;
+    if (!link?.classList.contains('item-link')) return;
+
+    if (link.href.match(/^gopher:\/\//)) {
+      if (i===0 && history[historyPointer-1]) historyPointer--;
+      historyPush(link.href);
+    } else if (link.href.match(/^https?:\/\//)) {
+      shell.openExternal(link.href);
+    }
+  });
 });
 
 $navAddress.addEventListener('keyup', (event) => {
@@ -105,14 +109,21 @@ $navAddress.addEventListener('keyup', (event) => {
 
 // HISTORY –————————————————————————————————————————————————————————————————————
 
-const history: string[] = [];
+interface HistoryPoint {
+  url: string,
+  content: string,
+};
+
+const history: HistoryPoint[] = [];
 let historyPointer = 0;
 
 function historyPush(url: string) {
+  const point: HistoryPoint = {url, content:''};
   history.splice(historyPointer+1);
-  history.push(url);
+  history.push(point);
   historyPointer = history.length -1;
   historyUpdate();
+  fetch(point);
 }
 
 function historyBack() {
@@ -126,23 +137,37 @@ function historyForward() {
 }
 
 function historyUpdate() {
-  $navBack.disabled = historyPointer < 1;
-  $navForward.disabled = historyPointer >= history.length -1;
-  const url = history[historyPointer];
-  $navAddress.value = url;
-  visit(url);
+  const points = history.slice(Math.max(0, historyPointer-1), historyPointer+2);
+  const prev = history[historyPointer-1];
+  const curr = history[historyPointer];
+  const next = history[historyPointer+1];
+
+  $navAddress.value = curr?.url;
+  $navBack.disabled = !prev;
+  $navForward.disabled = !next;
+
+  (<HTMLElement>$contents[0]).innerHTML = points[0]?.content ?? '';
+
+  if (prev) {
+    (<HTMLElement>$contents[1]).innerHTML = points[1]?.content ?? '';
+    (<HTMLElement>$panes[1]).style.display = 'block';
+  } else {
+    (<HTMLElement>$contents[1]).innerHTML = '';
+    (<HTMLElement>$panes[1]).style.display = 'none';
+  }
 }
 
 
 // NAV –————————————————————————————————————————————————————————————————————————
 
-function visit(url: string) {
-  $content.innerHTML = '';
-  Gopher.request(url)
+function fetch(point: HistoryPoint) {
+  Gopher.request(point.url)
     .pipe(Gopher.parser())
     .pipe(renderer(itemRenderers))
     .on('data', (line: string) => {
-      $content.innerHTML += line;
+      point.content += line;
+    }).on('end', () => {
+      historyUpdate();
     });
 }
 

@@ -23,13 +23,14 @@ html, body {
 }
 
 #nav-bar {
+  z-index: 2;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: start;
-  padding: 8px 16px;
-  border-bottom: solid thin #ccc;
+  padding: 8px;
   background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .1);
 }
 
 #nav-back, #nav-forward {
@@ -40,7 +41,7 @@ html, body {
   text-align: center;
   vertical-align: middle;
   border: solid thin #ccc;
-  border-radius: 2px;
+  border-radius: 3px;
   background: solid thin #fafafa;
 }
 
@@ -51,55 +52,71 @@ html, body {
 
 #nav-address {
   flex: 1;
-  padding: 6px 12px;
+  padding: 5px 12px 6px;
   border: solid thin #ccc;
-  border-radius: 2px;
+  border-radius: 3px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, .1);
 }
 
 #viewport {
+  overflow: hidden;
   flex: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: start;
+}
+
+.viewport-pane {
+  flex: 1;
+  width: 50%;
   padding: 24px;
   overflow: hidden scroll;
 }
+.viewport-pane:not(:last-child) {
+  border-right: solid thin #ccc;
+}
 
-#content {
+.content {
+  flex: 1;
   max-width: 602px;
   margin: 0 auto;
   font-family: "SF Mono", Menlo, Monaco, monospace;
   font-size: 12px;
+  overflow: hidden auto;
 }
 
-#content .item {
+.content .item {
   position: relative;
   padding: 12px 48px;
   border-radius: 8px;
 }
 
-#content .item:not([type="i"]):hover {
+.content .item:not([type="i"]):hover {
   background: #EAF1F6;
   cursor: pointer;
 }
 
-#content .item[type="i"] {
+.content .item[type="i"] {
   padding: 0 48px;
 }
 
-#content .item[type="i"] + .item:not([type="i"]),
-#content .item:not([type="i"]) + .item[type="i"] {
+.content .item[type="i"] + .item:not([type="i"]),
+.content .item:not([type="i"]) + .item[type="i"] {
   margin-top: 8px;
 }
 
-#content .item-icon {
+.content .item-icon {
   position: absolute;
   top: 6px;
   left: 16px;
   font-size: 16px;
 }
 
-#content .item-link {
+.content .item-link {
   text-decoration: none;
 }
 
-#content .item-label {
+.content .item-label {
   white-space: pre-wrap;
 }
