@@ -8,16 +8,20 @@ html {
   color: #333;
 }
 
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
 input, button, textarea {
   font-size: inherit;
   font-family: inherit;
   color: inherit;
 }
 
-html, body {
+pre {
   margin: 0;
-  padding: 0;
-  height: 100%;
 }
 
 #app {
@@ -41,7 +45,6 @@ html, body {
   box-shadow: 0 2px 8px rgba(0, 0, 0, .1);
   -webkit-app-region: drag;
 }
-
 #nav-back, #nav-forward {
   width: 28px;
   height: 24px;
@@ -64,7 +67,6 @@ html, body {
   pointer-events: none;
   opacity: .1;
 }
-
 #nav-address {
   flex: 1;
   font-size: inherit;
@@ -88,7 +90,6 @@ html, body {
   align-items: stretch;
   justify-content: start;
 }
-
 .viewport-pane {
   flex: 1;
   width: 50%;
@@ -110,38 +111,31 @@ html, body {
   font-size: 12px;
   overflow: hidden auto;
 }
-
 .content .item {
   position: relative;
   padding: 12px 48px;
   border-radius: 8px;
 }
-
 .content .item:not([type="i"]):hover {
   background: #EAF1F6;
   cursor: pointer;
 }
-
 .content .item[type="i"] {
   padding: 0 48px;
 }
-
 .content .item[type="i"] + .item:not([type="i"]),
 .content .item:not([type="i"]) + .item[type="i"] {
   margin-top: 8px;
 }
-
 .content .item-icon {
   position: absolute;
   top: 6px;
   left: 16px;
   font-size: 16px;
 }
-
 .content .item-link {
   text-decoration: none;
 }
-
 .content .item-label {
   white-space: pre-wrap;
 }

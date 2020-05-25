@@ -20,7 +20,7 @@ export const renderItemType = (type:string, label:string, url?:string, icon?:str
   <div class="item" type="${type}">
     ${icon? `<span class="item-icon">${icon}</span>` : ''}
     ${url? `<a class="item-link" href="${url}">` : ''}
-    <span class="item-label">${label}</span>
+    <span class="item-label">${label||'&nbsp;'}</span>
     ${url? `</a>` : ''}
   </div>
 `);
@@ -71,6 +71,7 @@ export const itemRenderers: {[type: string]: ItemRenderer} = {
   'j': fileItemRenderer,
   'p': fileItemRenderer,
   'x': fileItemRenderer,
+  '.': () => '',
 };
 
 const $navBack = <HTMLButtonElement>document.getElementById('nav-back')!;
@@ -161,14 +162,54 @@ function historyUpdate() {
 // NAV –————————————————————————————————————————————————————————————————————————
 
 function fetch(point: HistoryPoint) {
-  Gopher.request(point.url)
-    .pipe(Gopher.parser())
-    .pipe(renderer(itemRenderers))
-    .on('data', (line: string) => {
-      point.content += line;
-    }).on('end', () => {
+  const url = Gopher.parseGopherUrl(point.url);
+  const request = Gopher.request(point.url);
+
+  if (url.type) {
+    let buffer = Buffer.from([]);
+    historyUpdate();
+    request.on('data', (chunk) => {
+      buffer = Buffer.concat([buffer, chunk]);
+      point.content = `Loading: ${Math.round(buffer.length/1024)} KB`;
       historyUpdate();
     });
+    request.on('end', () => {
+      const type = (
+        url.type === '1'? 'text/plain' :
+        url.type === 'I'? 'image/*' :
+        url.type === 'p'? 'image/png' :
+        url.type === 'g'? 'image/gif' :
+        url.type === 'j'? 'image/jpeg' :
+        url.type === 's'? 'audio/*' :
+        url.type === 'j'? 'application/octet-stream' :
+        ''
+      );
+      const basename = url.pathname.split('/').slice(-1)[0];
+      const blob = new Blob([buffer], {type});
+      const obj = URL.createObjectURL(blob);
+      point.content = (
+        url.type === '0'? `<pre>${buffer.toString()}</pre>` :
+        url.type === 'I'? `<img src="${obj}">` :
+        url.type === 'p'? `<img src="${obj}">` :
+        url.type === 'g'? `<img src="${obj}">` :
+        url.type === 'j'? `<img src="${obj}">` :
+        url.type === 's'? `<audio controls src="${obj}"/>` :
+        `<a download="${basename}" href="${obj}">${basename}</a>`
+      );
+      historyUpdate();
+    });
+    return;
+  } else {
+    request
+      .pipe(Gopher.parser())
+      .pipe(renderer(itemRenderers))
+      .on('data', (line: string) => {
+        point.content += line;
+      }).on('end', () => {
+        historyUpdate();
+      });
+  }
+
 }
 
 
