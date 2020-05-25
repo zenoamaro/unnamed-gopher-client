@@ -150,10 +150,10 @@ function historyUpdate() {
 
   if (prev) {
     (<HTMLElement>$contents[1]).innerHTML = points[1]?.content ?? '';
-    (<HTMLElement>$panes[1]).style.display = 'block';
+    (<HTMLElement>$panes[1]).removeAttribute('hidden');
   } else {
     (<HTMLElement>$contents[1]).innerHTML = '';
-    (<HTMLElement>$panes[1]).style.display = 'none';
+    (<HTMLElement>$panes[1]).setAttribute('hidden', 'true');
   }
 }
 

@@ -5,6 +5,13 @@
 html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   font-size: 13px;
+  color: #333;
+}
+
+input, button, textarea {
+  font-size: inherit;
+  font-family: inherit;
+  color: inherit;
 }
 
 html, body {
@@ -28,34 +35,49 @@ html, body {
   flex-direction: row;
   align-items: center;
   justify-content: start;
-  padding: 8px;
+  height: 38px;
+  padding: 0 8px 0 80px;
   background-color: white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, .1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .1);
+  -webkit-app-region: drag;
 }
 
 #nav-back, #nav-forward {
   width: 28px;
-  height: 28px;
+  height: 24px;
   padding: 0;
-  margin-right: 8px;
+  margin-right: 4px;
+  font-size: 18px;
   text-align: center;
   vertical-align: middle;
-  border: solid thin #ccc;
-  border-radius: 3px;
-  background: solid thin #fafafa;
+  border: none;
+  border-radius: 5px;
+  background: transparent;
 }
-
+#nav-forward {
+  margin-right: 8px;
+}
+#nav-back:hover, #nav-forward:hover {
+  background: #f0f0f0;
+}
 #nav-back:disabled, #nav-forward:disabled {
   pointer-events: none;
-  color: #ccc;
+  opacity: .1;
 }
 
 #nav-address {
   flex: 1;
-  padding: 5px 12px 6px;
-  border: solid thin #ccc;
-  border-radius: 3px;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, .1);
+  font-size: inherit;
+  height: 24px;
+  padding: 1px 12px 3px;
+  border: none;
+  border-radius: 5px;
+  background: transparent;
+  -webkit-app-region: no-drag;
+}
+#nav-address:hover,
+#nav-address:focus {
+  background: #f0f0f0;
 }
 
 #viewport {
@@ -73,8 +95,11 @@ html, body {
   padding: 24px;
   overflow: hidden scroll;
 }
-.viewport-pane:not(:last-child) {
-  border-right: solid thin #ccc;
+.viewport-pane:not(:first-child) {
+  border-left: solid thin #ddd;
+}
+.viewport-pane[hidden] {
+  display: none;
 }
 
 .content {
