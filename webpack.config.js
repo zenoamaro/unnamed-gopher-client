@@ -12,6 +12,7 @@ const config = (name, entry, target) => ({
 
   resolve: {
     extensions: ['.js', '.ts', '.tsx'],
+    modules: ['src', 'node_modules'],
   },
 
   module: {
@@ -37,5 +38,5 @@ const config = (name, entry, target) => ({
 
 module.exports = [
   config('main', 'src/main/index.ts', 'electron-main'),
-  config('renderer', 'src/renderer/index.ts', 'electron-renderer'),
+  config('app', 'src/index.tsx', 'electron-renderer'),
 ];
