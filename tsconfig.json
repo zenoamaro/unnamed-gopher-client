@@ -1,17 +1,13 @@
 {
-  "include": [
-    "src/**/*.ts"
-  ],
   "compilerOptions": {
-    "outDir": "lib",
     "target": "es2018",
     "lib": ["dom", "esnext"],
     "module": "commonjs",
     "moduleResolution": "node",
+    "jsx": "react",
     "strict": true,
     "sourceMap": true,
     "inlineSources": true,
-    "declaration": true,
-    "esModuleInterop": true,
+    "esModuleInterop": true
   }
 }

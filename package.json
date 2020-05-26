@@ -8,31 +8,34 @@
   "keywords": [],
   "homepage": "https://github.com/zenoamaro/unnamed-gopher-client",
   "repository": "git@github.com:zenojevski/unnamed-gopher-client.git",
-  "main": "lib/index.js",
   "scripts": {
-    "start": "electron lib",
-    "build": "mkdir -p lib && cp src/*.html src/*.css lib && tsc",
+    "start": "electron dist/main",
+    "build": "webpack --mode production",
+    "watch": "webpack-dev-server --watch --mode development",
     "test": "jest lib",
-    "clean": "rm -rf lib",
+    "clean": "rm -rf dist",
     "prepublishOnly": "npm run clean && npm run build && npm run test"
   },
-  "files": [
-    "bin",
-    "lib",
-    "README.md",
-    "LICENSE.md"
-  ],
   "dependencies": {
     "multipipe": "^4.0.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
     "through2": "^3.0.1"
   },
   "devDependencies": {
     "@types/jest": "^25.2.3",
     "@types/multipipe": "^3.0.0",
     "@types/node": "^12.12.42",
+    "@types/react": "^16.9.35",
+    "@types/react-dom": "^16.9.8",
     "@types/through2": "^2.0.36",
     "electron": "^9.0.0",
+    "file-loader": "^6.0.0",
     "jest": "^26.0.1",
-    "typescript": "^3.9.3"
+    "ts-loader": "^7.0.5",
+    "typescript": "^3.9.3",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.11.0"
   }
 }

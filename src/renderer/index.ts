@@ -1,6 +1,9 @@
 import {shell} from 'electron';
 import transform from 'through2';
-import * as Gopher from './gopher';
+import * as Gopher from '../gopher';
+
+import './index.html';
+import './styles.css';
 
 export type ItemRenderer = (item: Gopher.Item) => string;
 
