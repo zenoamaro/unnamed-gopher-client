@@ -1,20 +1,25 @@
 import React from 'react';
 import styled from 'styled-components';
 import {Page} from 'core';
-import Bag from 'utils/Bag';
 
 
-export default function TextRenderer(p: {
+export default function ImageRenderer(p: {
   page: Page,
   historyIndex: number,
   onVisit(url: string, at: number): void,
 }) {
-  // console.log('TextRenderer');
-  // useTraceUpdate(p);
+  const {page} = p;
+  const [imageUrl, setImageUrl] = React.useState('');
+
+  React.useEffect(() => {
+    const blob = new Blob([page.raw]);
+    const obj = URL.createObjectURL(blob);
+    setImageUrl(obj);
+  }, [page.id, page.raw]);
 
   return (
     <Container>
-      {p.page.raw.toString()}
+      <img src={imageUrl} width="100%"/>
     </Container>
   );
 }
@@ -25,8 +30,5 @@ const Container = styled.div`
   padding: 24px;
   scroll-snap-align: end;
   overflow: hidden scroll;
-  white-space: pre-wrap;
-  font-family: "SF Mono", Menlo, Monaco, monospace;
-  font-size: 12px;
   &:first-child, &:not(:last-child){ border-right: solid thin #ddd }
 `;
