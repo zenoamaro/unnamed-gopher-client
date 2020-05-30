@@ -8,7 +8,7 @@ import TextRenderer from 'renderers/text';
 const RENDERER_MAP = {
   '0': TextRenderer,
   '1': GopherRenderer,
-  'default': (p: any) => {},
+  'default': TextRenderer,
 }
 
 export default function TabPage(p: {

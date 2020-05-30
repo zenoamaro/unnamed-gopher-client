@@ -7,7 +7,7 @@ export interface Page {
   url: string,
   query?: string,
   type: string,
-  state: 'loading' | 'ready',
+  state: 'loading' | 'ready' | 'error',
   raw: Buffer,
   content: Gopher.Item[],
 }

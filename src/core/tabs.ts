@@ -80,6 +80,14 @@ export function navigateTab(tabId: string, url: string, at?: number) {
         pp.content = Gopher.parse(pp.raw.toString());
       }
     });
+  }).on('error', (err) => {
+    update((store) => {
+      const tab = store.tabs[tabId];
+      const pp: Page = tab.history.find(p => p.id === page.id)!;
+      pp.state = 'error';
+      pp.type = '3';
+      pp.raw = Buffer.from(err.message);
+    });
   });
 }
 
