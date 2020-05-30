@@ -2,10 +2,10 @@ import {uniqueId} from 'lodash';
 import * as Gopher from 'gopher';
 import {update} from './state';
 import {makePage, Page} from './pages';
+import {parseGopherUrl} from 'gopher';
 
 export interface Tab {
   id: string,
-  state: 'loading' | 'ready',
   history: Page[],
   historyIndex: number,
 }
@@ -13,7 +13,6 @@ export interface Tab {
 export function makeTab(url: string) {
   return {
     id: uniqueId('tab'),
-    state: 'ready' as 'ready',
     historyIndex: 0,
     history: [
       makePage(url),
@@ -43,7 +42,10 @@ export function destroyTab(tabId: string) {
 }
 
 export function navigateTab(tabId: string, url: string, at?: number) {
-  const page = makePage(url);
+  const parsedUrl = parseGopherUrl(url);
+  let page = makePage(url);
+  page.type = parsedUrl.type ?? '1';
+  page.state = 'loading';
 
   update((store) => {
     const tab = store.tabs[tabId];
@@ -51,18 +53,22 @@ export function navigateTab(tabId: string, url: string, at?: number) {
     tab.history.splice(at+1);
     tab.history.push(page);
     tab.historyIndex = tab.history.length -1;
-    tab.state = 'loading';
   });
 
-  Gopher.request(url).pipe(Gopher.parser()).on('data', (item) => {
+  Gopher.request(url).on('data', (chunk) => {
     update((store) => {
       const tab = store.tabs[tabId];
-      tab.history.find(p => p.id === page.id)!.content.push(item);
+      const pp: Page = tab.history.find(p => p.id === page.id)!;
+      pp.raw = Buffer.concat([pp.raw, chunk]);
     });
   }).on('end', () => {
     update((store) => {
       const tab = store.tabs[tabId];
-      tab.state = 'ready';
+      const pp: Page = tab.history.find(p => p.id === page.id)!;
+      pp.state = 'ready';
+      if (pp.type === '1') {
+        pp.content = Gopher.parse(pp.raw.toString());
+      }
     });
   });
 }

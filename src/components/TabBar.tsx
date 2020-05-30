@@ -23,7 +23,7 @@ export default function Toolbar(p: {
       {p.tabs.map((tab) => {
         const page = tab.history[tab.historyIndex];
         return <Tab key={tab.id} selected={tab.id === p.selectedTabId} onClick={() => p.onSelectTab(tab.id)}>
-          {tab.state === 'loading' ? <IoIosDownload size={16}/> : <IoIosGlobe size={16}/>}
+          {page.state === 'loading' ? <IoIosDownload size={16}/> : <IoIosGlobe size={16}/>}
           <TabTitle>{page.url}</TabTitle>
           <IoIosClose size={22} onClick={(e) => {p.onCloseTab(tab.id); e.stopPropagation()}}/>
         </Tab>
