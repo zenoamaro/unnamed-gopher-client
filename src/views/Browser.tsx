@@ -8,15 +8,11 @@ import BrowserTab from './BrowserTab';
 export default function Browser(p: {
   state: State
 }) {
-  // console.log('Browser');
-
   const window = p.state.windows.main;
   const tabs = window.tabs.map(tabId => p.state.tabs[tabId]);
-  if (!tabs.length) close();
+  if (!tabs.length) createTab('main', 'gopher://start');
 
   const tab = p.state.tabs[window.selectedTabId];
-
-  React.useEffect(() => navigateTab(tab.id, 'gopher://start'), []);
 
   const selectWindowTab = React.useMemo(() => (tabId: string) => {
     selectTab(window.id, tabId);

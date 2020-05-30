@@ -12,16 +12,13 @@ export interface State {
   tabs: Bag<Tab>,
 }
 
-const initialTab = makeTab();
-const initialWindow = makeWindow([initialTab.id]);
+const initialWindow = makeWindow([]);
 
 let state: State = {
   windows: {
     [initialWindow.id]: initialWindow,
   },
-  tabs: {
-    [initialTab.id]: initialTab,
-  },
+  tabs: {},
 };
 
 let listeners: Listener[] = [];
