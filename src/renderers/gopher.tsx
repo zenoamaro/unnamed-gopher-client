@@ -84,7 +84,7 @@ export function GopherItem(p: {
 
   const Icon = ICON_MAP[type];
 
-  return <Line data-type={type} onClick={visit}>
+  return <Line data-type={type} data-link={isLinked} onClick={visit}>
     {Icon? <LineIcon><Icon size={20}/></LineIcon> : null}
     <LineTitle>{label || ' '}</LineTitle>
   </Line>;
@@ -97,13 +97,19 @@ const Line = styled.div`
   padding: 12px 48px;
   border-radius: 8px;
 
+  &[data-link="true"] {
+    color: #0366d6;
+  }
+
   &:not([data-type="i"]):hover {
     background: #EAF1F6;
     cursor: pointer;
   }
+
   &[data-type="i"] {
     padding: 0 48px;
   }
+
   &[data-type="i"] + &:not([data-type="i"]),
   &:not([data-type="i"]) + &[data-type="i"] {
     margin-top: 8px;
@@ -114,13 +120,9 @@ const LineIcon = styled.div`
   position: absolute;
   top: 9px;
   left: 16px;
-  color: gray;
+  color: inherit;
 `;
 
 const LineTitle = styled.div`
   white-space: pre-wrap;
-`;
-
-const LineLink = styled.a`
-  text-decoration: none;
 `;
