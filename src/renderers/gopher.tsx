@@ -15,6 +15,7 @@ import {
   IoIosDesktop,
 } from 'react-icons/io';
 
+
 const ICON_MAP: Bag<React.FC<{size: number}>> = {
   '0': IoIosDocument,
   '1': IoIosFolder,
@@ -76,15 +77,17 @@ export function GopherItem(p: {
   // console.log('GopherItem');
   // useTraceUpdate(p);
 
-  const {type, label, url} = p.item;
+  const {item, historyIndex, onVisit} = p;
+  const {type, label, url} = item;
   if (type == null || type === '.') return null;
-
-  const isLinked = !('i3'.includes(type));
-  const visit = isLinked ? () => p.onVisit(url!, p.historyIndex) : undefined;
-
   const Icon = ICON_MAP[type];
 
-  return <Line data-type={type} data-link={isLinked} onClick={visit}>
+  const isLinked = !('i3'.includes(type));
+  const visit = React.useCallback(() => {
+    onVisit(url!, historyIndex)
+  }, [onVisit, url, historyIndex])
+
+  return <Line data-type={type} data-link={isLinked} onClick={isLinked? visit : undefined}>
     {Icon? <LineIcon><Icon size={20}/></LineIcon> : null}
     <LineTitle>{label || ' '}</LineTitle>
   </Line>;

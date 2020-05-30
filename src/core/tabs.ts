@@ -68,7 +68,7 @@ export function navigateTab(tabId: string, url: string, at?: number) {
 
   update((store) => {
     const tab = store.tabs[tabId];
-    if (!at) at = tab.historyIndex;
+    if (at == null) at = tab.historyIndex;
     tab.history.splice(at+1);
     tab.history.push(page);
     tab.historyIndex = tab.history.length -1;

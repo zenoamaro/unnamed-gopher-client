@@ -15,19 +15,20 @@ export default function TabHistory(p: {
   // console.log('TabHistory');
   // useTraceUpdate(p);
 
+  const {tab, onVisit} = p;
   const $scroller = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
     if (!$scroller.current) return;
-    const $pane = $scroller.current.children[p.tab.historyIndex];
+    const $pane = $scroller.current.children[tab.historyIndex];
     $pane?.scrollIntoView({behavior:'auto', inline:'end'});
-  }, [p.tab.id])
+  }, [tab.id])
 
   React.useEffect(() => {
     if (!$scroller.current) return;
-    const $pane = $scroller.current.children[p.tab.historyIndex];
+    const $pane = $scroller.current.children[tab.historyIndex];
     $pane?.scrollIntoView({behavior:'smooth', inline:'end'});
-  }, [$scroller.current, p.tab.historyIndex])
+  }, [$scroller.current, tab.historyIndex])
 
   const [onScroll] = useDebouncedCallback(() => {
     if (!$scroller.current) return;
@@ -39,16 +40,16 @@ export default function TabHistory(p: {
       const start = Math.abs(left);
       const end = Math.abs(width - left - $pane.offsetWidth);
       if (start <= 1 || end <= 1) {
-        if (i !== p.tab.historyIndex) navigateTabAt(p.tab.id, i);
+        if (i !== tab.historyIndex) navigateTabAt(tab.id, i);
       }
     })
   }, 100);
 
   const pages = React.useMemo(() => (
-    p.tab.history.map((page, i) => (
+    tab.history.map((page, i) => (
       <TabPage key={page.id} historyIndex={i} page={page} onVisit={p.onVisit}/>
     ))
-  ), [p.tab.id, p.tab.history]);
+  ), [p.onVisit, tab.id, tab.history]);
 
   return (
     <Container ref={$scroller} onScroll={onScroll}>
