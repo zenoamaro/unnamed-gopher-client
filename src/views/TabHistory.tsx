@@ -6,7 +6,7 @@ import {useDebouncedCallback} from 'use-debounce';
 import {Tab, navigateTabAt} from 'core';
 import {Horizontal} from 'components/Layout';
 import TabPage from './TabPage';
-import {usePrevious} from 'utils/usePrevious';
+
 
 export default function TabHistory(p: {
   tab: Tab,
@@ -49,7 +49,7 @@ export default function TabHistory(p: {
     tab.history.map((page, i) => (
       <TabPage key={page.id} historyIndex={i} page={page} onVisit={p.onVisit}/>
     ))
-  ), [p.onVisit, tab.id, tab.history]);
+  ), [onVisit, tab.id, tab.history]);
 
   return (
     <Container ref={$scroller} onScroll={onScroll}>

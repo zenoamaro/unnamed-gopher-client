@@ -84,7 +84,7 @@ export function GopherItem(p: {
 
   const isLinked = !('i3'.includes(type));
   const visit = React.useCallback(() => {
-    onVisit(url!, historyIndex)
+    onVisit(url!, historyIndex +1);
   }, [onVisit, url, historyIndex])
 
   return <Line data-type={type} data-link={isLinked} onClick={isLinked? visit : undefined}>
