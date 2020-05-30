@@ -99,14 +99,16 @@ const Line = styled.div`
   width: 602px;
   padding: 12px 48px;
   border-radius: 8px;
+  line-height: 1;
 
-  &[data-link="true"] {
-    color: #0366d6;
+  &:not([data-link="true"]) {
+    user-select: text;
   }
 
-  &:not([data-type="i"]):hover {
-    background: #EAF1F6;
+  &[data-link="true"] {
     cursor: pointer;
+    color: #0366d6;
+    &:hover {background: #EAF1F6}
   }
 
   &[data-type="i"] {
