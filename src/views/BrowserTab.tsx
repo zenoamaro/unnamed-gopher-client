@@ -35,7 +35,7 @@ export default function BrowserTab(p: {
 
   return <Container>
     <NavBar
-      url={page.url}
+      url={page?.url}
       canNavigateBack={canNavigateBack}
       canNavigateForward={canNavigateForward}
       onNavigate={navigateThisTab}

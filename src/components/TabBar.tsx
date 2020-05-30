@@ -14,6 +14,7 @@ import {
   IoIosCloseCircleOutline,
   IoIosSync,
   IoIosDocument,
+  IoIosStar,
 } from 'react-icons/io'
 
 export default function Toolbar(p: {
@@ -26,8 +27,15 @@ export default function Toolbar(p: {
   return (
     <Container>
       {p.tabs.map((tab) => {
-        const page = tab.history[tab.historyIndex];
+        if (!tab.history.length) {
+          return <Tab key={tab.id} selected={tab.id === p.selectedTabId} onClick={() => p.onSelectTab(tab.id)}>
+            <IoIosStar size={16}/>
+            <TabTitle>New tab</TabTitle>
+            <IoIosClose size={22} onClick={(e) => {p.onCloseTab(tab.id); e.stopPropagation()}}/>
+          </Tab>
+        }
 
+        const page = tab.history[tab.historyIndex];
         const {hostname, pathname} = parseGopherUrl(page.url);
 
         const tabTitle = [
@@ -68,6 +76,7 @@ const Tab = styled(Horizontal)<{
   -webkit-app-region: no-drag;
   align-items: center;
   padding: 0 6px 0 12px;
+  color: ${p => p.selected? 'inherit' : '#aaa'};
   background: ${p => p.selected? 'white' : 'transparent'};
   border-left: solid thin transparent;
   border-right: solid thin transparent;

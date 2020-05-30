@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import {State, selectTab, createTab, destroyTab} from 'core';
+import {State, selectTab, createTab, destroyTab, navigateTab} from 'core';
 import {Vertical} from 'components/Layout';
 import TabBar from 'components/TabBar';
 import BrowserTab from './BrowserTab';
@@ -16,12 +16,14 @@ export default function Browser(p: {
 
   const tab = p.state.tabs[window.selectedTabId];
 
+  React.useEffect(() => navigateTab(tab.id, 'gopher://start'), []);
+
   const selectWindowTab = React.useMemo(() => (tabId: string) => {
     selectTab(window.id, tabId);
   }, [window.id])
 
   const createWindowTab = React.useMemo(() => () => {
-    createTab(window.id, 'gopher://');
+    createTab(window.id);
   }, [window.id]);
 
   return <Container>

@@ -12,7 +12,7 @@ export interface State {
   tabs: Bag<Tab>,
 }
 
-const initialTab = makeTab('gopher://A')
+const initialTab = makeTab();
 const initialWindow = makeWindow([initialTab.id]);
 
 let state: State = {

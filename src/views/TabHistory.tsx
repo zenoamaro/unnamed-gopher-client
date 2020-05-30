@@ -20,13 +20,13 @@ export default function TabHistory(p: {
   React.useEffect(() => {
     if (!$scroller.current) return;
     const $pane = $scroller.current.children[p.tab.historyIndex];
-    $pane.scrollIntoView({behavior:'auto', inline:'end'});
+    $pane?.scrollIntoView({behavior:'auto', inline:'end'});
   }, [p.tab.id])
 
   React.useEffect(() => {
     if (!$scroller.current) return;
     const $pane = $scroller.current.children[p.tab.historyIndex];
-    if ($pane) $pane.scrollIntoView({behavior:'smooth', inline:'end'});
+    $pane?.scrollIntoView({behavior:'smooth', inline:'end'});
   }, [$scroller.current, p.tab.historyIndex])
 
   const [onScroll] = useDebouncedCallback(() => {

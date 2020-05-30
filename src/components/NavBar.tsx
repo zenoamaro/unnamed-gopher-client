@@ -47,7 +47,7 @@ export default function NavBar(p: {
     </ToolbarButton>
 
     <AddressField
-      value={temporaryUrl}
+      value={temporaryUrl ?? ''}
       onChange={changeAddress}
       placeholder="Search or enter address"
       // @ts-ignore

@@ -5,30 +5,39 @@ import {makePage, Page} from './pages';
 import {parseGopherUrl} from 'gopher';
 import {URL} from 'url';
 
+// @ts-ignore
+import {createReadStream} from 'streamifier';
+
+const START_PAGE = (`
+iWelcome to your start page!\t\t\t
+1Floodgap\t\tgopher.floodgap.com\t70
+1Bitreich\t\tbitreich.org\t70
+1SDF\t\tsdf.org\t70
+`).trim();
+
 export interface Tab {
   id: string,
   history: Page[],
   historyIndex: number,
 }
 
-export function makeTab(url: string) {
+export function makeTab(url?: string) {
   return {
     id: uniqueId('tab'),
     historyIndex: 0,
-    history: [
-      makePage(url),
-    ],
+    history: [],
   };
 }
 
-export function createTab(windowId: string, url: string) {
+export function createTab(windowId: string, url?: string) {
+  const tab = makeTab(url);
   update((store) => {
-    const tab = makeTab(url);
     const window = store.windows.main;
     store.tabs[tab.id] = tab;
     window.tabs.push(tab.id);
     window.selectedTabId = tab.id;
   });
+  if (url) navigateTab(tab.id, url);
 }
 
 export function destroyTab(tabId: string) {
@@ -65,7 +74,12 @@ export function navigateTab(tabId: string, url: string, at?: number) {
     tab.historyIndex = tab.history.length -1;
   });
 
-  Gopher.request(url, query).on('data', (chunk) => {
+  const request = (
+    parsedUrl.hostname === 'start' ? createReadStream(START_PAGE) :
+    Gopher.request(url, query)
+  );
+
+  request.on('data', (chunk: Buffer) => {
     update((store) => {
       const tab = store.tabs[tabId];
       const pp: Page = tab.history.find(p => p.id === page.id)!;
@@ -80,7 +94,7 @@ export function navigateTab(tabId: string, url: string, at?: number) {
         pp.content = Gopher.parse(pp.raw.toString());
       }
     });
-  }).on('error', (err) => {
+  }).on('error', (err: Error) => {
     update((store) => {
       const tab = store.tabs[tabId];
       const pp: Page = tab.history.find(p => p.id === page.id)!;
