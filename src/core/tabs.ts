@@ -3,6 +3,7 @@ import * as Gopher from 'gopher';
 import {update} from './state';
 import {makePage, Page} from './pages';
 import {parseGopherUrl} from 'gopher';
+import {URL} from 'url';
 
 export interface Tab {
   id: string,
@@ -42,8 +43,17 @@ export function destroyTab(tabId: string) {
 }
 
 export function navigateTab(tabId: string, url: string, at?: number) {
+  let query;
+
+  try {
+    new URL(url);
+  } catch (err) {
+    query = url;
+    url = `gopher://gopher.floodgap.com/v2/vs`;
+  }
+
   const parsedUrl = parseGopherUrl(url);
-  let page = makePage(url);
+  let page = makePage(url, query);
   page.type = parsedUrl.type ?? '1';
   page.state = 'loading';
 
@@ -55,7 +65,7 @@ export function navigateTab(tabId: string, url: string, at?: number) {
     tab.historyIndex = tab.history.length -1;
   });
 
-  Gopher.request(url).on('data', (chunk) => {
+  Gopher.request(url, query).on('data', (chunk) => {
     update((store) => {
       const tab = store.tabs[tabId];
       const pp: Page = tab.history.find(p => p.id === page.id)!;

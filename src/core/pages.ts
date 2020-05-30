@@ -5,16 +5,18 @@ import {update} from './state';
 export interface Page {
   id: string,
   url: string,
+  query?: string,
   type: string,
   state: 'loading' | 'ready',
   raw: Buffer,
   content: Gopher.Item[],
 }
 
-export function makePage(url: string): Page {
+export function makePage(url: string, query?: string): Page {
   return {
     id: uniqueId('page'),
     url,
+    query,
     type: '1',
     state: 'ready',
     raw: Buffer.from([]),
