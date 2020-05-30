@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import * as Gopher from 'gopher';
-import {Page} from 'core';
+import {Page, createTab} from 'core';
 import Bag from 'utils/Bag';
 
 import {
@@ -83,21 +83,24 @@ export function GopherItem(p: {
   const Icon = ICON_MAP[type];
 
   const isLinked = !('i37'.includes(type));
-  const visit = React.useCallback(() => {
-    onVisit(url!, historyIndex +1);
+  const visit = React.useCallback((e: React.MouseEvent) => {
+    if (e.metaKey) createTab('main', url!);
+    else onVisit(url!, historyIndex +1);
   }, [onVisit, url, historyIndex]);
 
   const isSearch = (type === '7');
   const search = React.useCallback((e) => {
     if (e.key !== 'Enter') return;
     const query = (e.target as HTMLInputElement).value;
-    onVisit(`${url}\t${query}`, historyIndex +1);
+    const searchUrl = `${url}\t${query}`;
+    if (e.metaKey) createTab('main', searchUrl);
+    else onVisit(searchUrl, historyIndex +1);
   }, [onVisit, historyIndex]);
 
   return <Line data-type={type} data-link={isLinked} onClick={isLinked? visit : undefined}>
     {Icon? <LineIcon><Icon size={20}/></LineIcon> : null}
     {isSearch ? (
-      <LineSearchField placeholder={label} onKeyUp={search}/>
+      <LineSearchField placeholder={label} onKeyDown={search}/>
     ) : (
       <LineTitle>{label || ' '}</LineTitle>
     )}

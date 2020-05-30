@@ -8,6 +8,7 @@ import {
   IoIosArrowForward,
   IoIosSettings,
 } from 'react-icons/io'
+import {createTab} from 'core';
 
 export default function NavBar(p: {
   url: string,
@@ -33,7 +34,8 @@ export default function NavBar(p: {
   const submitAddress = React.useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       const url = (e.target as HTMLInputElement).value.trim();
-      p.onNavigate(url);
+      if (e.metaKey) createTab('main', url);
+      else p.onNavigate(url);
     }
   }, [p.onNavigate]);
 
@@ -51,7 +53,7 @@ export default function NavBar(p: {
       onChange={changeAddress}
       placeholder="Search or enter address"
       // @ts-ignore
-      onKeyUp={submitAddress}
+      onKeyDown={submitAddress}
     />
 
     <ToolbarButton>
