@@ -15,6 +15,7 @@ import {
   IoIosSync,
   IoIosDocument,
   IoIosStar,
+  IoIosSearch,
 } from 'react-icons/io'
 
 export default function Toolbar(p: {
@@ -39,13 +40,14 @@ export default function Toolbar(p: {
         const {hostname, pathname} = parseGopherUrl(page.url);
 
         const tabTitle = [
-          capitalized(pathname.replace(/\/$/, '').split('/').slice(-1)[0]),
+          page.query ?? capitalized(pathname.replace(/\/$/, '').split('/').slice(-1)[0]),
           hostname
         ].filter(Boolean).join(' - ');
 
         const TabIcon = (
           page.state === 'loading' ? IoIosSync :
           page.type === '1' ? IoIosFolderOpen :
+          page.type === '7' ? IoIosSearch :
           page.type === '0' ? IoIosDocument :
           'Ipgj'.includes(page.type) ? IoIosImage :
           IoIosCloseCircleOutline

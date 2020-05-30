@@ -53,12 +53,13 @@ export function destroyTab(tabId: string) {
 
 export function navigateTab(tabId: string, url: string, at?: number) {
   let query;
+  [url, query] = url.split('\t');
 
   try {
     new URL(url);
   } catch (err) {
     query = url;
-    url = `gopher://gopher.floodgap.com/v2/vs`;
+    url = `gopher://gopher.floodgap.com/7/v2/vs`;
   }
 
   const parsedUrl = parseGopherUrl(url);
@@ -90,7 +91,7 @@ export function navigateTab(tabId: string, url: string, at?: number) {
       const tab = store.tabs[tabId];
       const pp: Page = tab.history.find(p => p.id === page.id)!;
       pp.state = 'ready';
-      if (pp.type === '1') {
+      if ('17'.includes(pp.type)) {
         pp.content = Gopher.parse(pp.raw.toString());
       }
     });

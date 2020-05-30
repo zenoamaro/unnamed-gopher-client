@@ -82,14 +82,25 @@ export function GopherItem(p: {
   if (type == null || type === '.') return null;
   const Icon = ICON_MAP[type];
 
-  const isLinked = !('i3'.includes(type));
+  const isLinked = !('i37'.includes(type));
   const visit = React.useCallback(() => {
     onVisit(url!, historyIndex +1);
-  }, [onVisit, url, historyIndex])
+  }, [onVisit, url, historyIndex]);
+
+  const isSearch = (type === '7');
+  const search = React.useCallback((e) => {
+    if (e.key !== 'Enter') return;
+    const query = (e.target as HTMLInputElement).value;
+    onVisit(`${url}\t${query}`, historyIndex +1);
+  }, [onVisit, historyIndex]);
 
   return <Line data-type={type} data-link={isLinked} onClick={isLinked? visit : undefined}>
     {Icon? <LineIcon><Icon size={20}/></LineIcon> : null}
-    <LineTitle>{label || ' '}</LineTitle>
+    {isSearch ? (
+      <LineSearchField placeholder={label} onKeyUp={search}/>
+    ) : (
+      <LineTitle>{label || ' '}</LineTitle>
+    )}
   </Line>;
 }
 
@@ -130,4 +141,14 @@ const LineIcon = styled.div`
 
 const LineTitle = styled.div`
   white-space: pre-wrap;
+`;
+
+const LineSearchField = styled.input`
+  width: 70%;
+  margin: -7px 0 -6px;
+  padding: 6px 8px 5px;
+  border: solid thin #ddd;
+  border-radius: 3px;
+  background: white;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, .1);
 `;

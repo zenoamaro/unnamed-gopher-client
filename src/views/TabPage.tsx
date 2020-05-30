@@ -8,6 +8,7 @@ import TextRenderer from 'renderers/text';
 const RENDERER_MAP = {
   '0': TextRenderer,
   '1': GopherRenderer,
+  '7': GopherRenderer,
   'default': TextRenderer,
 }
 
