@@ -1,14 +1,19 @@
 import React from 'react';
 import styled from 'styled-components';
+import {parseGopherUrl} from 'gopher';
 import {Tab} from 'core';
 import {Horizontal} from './Layout';
 import Button from './Button';
+import {capitalized} from 'utils/text';
 
 import {
   IoIosClose,
   IoIosAdd,
-  IoIosGlobe,
-  IoIosDownload,
+  IoIosFolderOpen,
+  IoIosImage,
+  IoIosCloseCircleOutline,
+  IoIosSync,
+  IoIosDocument,
 } from 'react-icons/io'
 
 export default function Toolbar(p: {
@@ -22,9 +27,25 @@ export default function Toolbar(p: {
     <Container>
       {p.tabs.map((tab) => {
         const page = tab.history[tab.historyIndex];
+
+        const {hostname, pathname} = parseGopherUrl(page.url);
+
+        const tabTitle = [
+          capitalized(pathname.replace(/\/$/, '').split('/').slice(-1)[0]),
+          hostname
+        ].filter(Boolean).join(' - ');
+
+        const TabIcon = (
+          page.state === 'loading' ? IoIosSync :
+          page.type === '1' ? IoIosFolderOpen :
+          page.type === '0' ? IoIosDocument :
+          'Ipgj'.includes(page.type) ? IoIosImage :
+          IoIosCloseCircleOutline
+        );
+
         return <Tab key={tab.id} selected={tab.id === p.selectedTabId} onClick={() => p.onSelectTab(tab.id)}>
-          {page.state === 'loading' ? <IoIosDownload size={16}/> : <IoIosGlobe size={16}/>}
-          <TabTitle>{page.url}</TabTitle>
+          <TabIcon size={16}/>
+          <TabTitle>{tabTitle}</TabTitle>
           <IoIosClose size={22} onClick={(e) => {p.onCloseTab(tab.id); e.stopPropagation()}}/>
         </Tab>
       })}
@@ -46,7 +67,7 @@ const Tab = styled(Horizontal)<{
 }>`
   -webkit-app-region: no-drag;
   align-items: center;
-  padding: 0 12px;
+  padding: 0 6px 0 12px;
   background: ${p => p.selected? 'white' : 'transparent'};
   border-left: solid thin transparent;
   border-right: solid thin transparent;
@@ -56,8 +77,11 @@ const Tab = styled(Horizontal)<{
 
 const TabTitle = styled.div`
   display: inline-block;
-  &:not(:first-child) {margin-left: 8px}
-  &:not(:last-child) {margin-right: 8px}
+  max-width: 200px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  margin: 0 8px;
 `;
 
 const ToolbarButton = styled(Button)`
