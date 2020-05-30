@@ -85,6 +85,7 @@ export function GopherItem(p: {
   const isLinked = !('i37'.includes(type));
   const visit = React.useCallback((e: React.MouseEvent) => {
     if (e.metaKey) createTab('main', url!);
+    else if (e.shiftKey) onVisit(url!, historyIndex);
     else onVisit(url!, historyIndex +1);
   }, [onVisit, url, historyIndex]);
 
