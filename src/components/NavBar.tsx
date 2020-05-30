@@ -20,24 +20,42 @@ export default function NavBar(p: {
 
   onOpenSettings(): void,
 }) {
+  const [temporaryUrl, setTemporaryUrl] = React.useState(p.url);
+
+  React.useEffect(() => {
+    setTemporaryUrl(p.url);
+  }, [p.url]);
+
+  const changeAddress = React.useCallback((e: React.ChangeEvent) => {
+    setTemporaryUrl((e.target as HTMLInputElement).value);
+  }, [setTemporaryUrl]);
+
+  const submitAddress = React.useCallback((e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      const url = (e.target as HTMLInputElement).value.trim();
+      p.onNavigate(url);
+    }
+  }, [p.onNavigate]);
+
   return <Container>
-    <ToolbarButton disabled={!p.canNavigateBack} onClick={() => p.onNavigateBack()}>
+    <ToolbarButton disabled={!p.canNavigateBack} onClick={p.onNavigateBack}>
       <IoIosArrowBack size={22}/>
     </ToolbarButton>
 
-    <ToolbarButton disabled={!p.canNavigateForward} onClick={() => p.onNavigateForward()}>
+    <ToolbarButton disabled={!p.canNavigateForward} onClick={p.onNavigateForward}>
       <IoIosArrowForward size={22}/>
     </ToolbarButton>
 
     <AddressField
-      defaultValue={p.url}
+      value={temporaryUrl}
+      onChange={changeAddress}
       placeholder="Search or enter address"
       // @ts-ignore
-      onKeyUp={e => e.key === 'Enter'? p.onNavigate(e.target.value) : null}
+      onKeyUp={submitAddress}
     />
 
     <ToolbarButton>
-      <IoIosSettings size={22} onClick={() => p.onOpenSettings()}/>
+      <IoIosSettings size={22} onClick={p.onOpenSettings}/>
     </ToolbarButton>
   </Container>;
 }
