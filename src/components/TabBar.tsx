@@ -1,5 +1,6 @@
 import React from 'react';
 import styled, {keyframes} from 'styled-components';
+import {SortableContainer, SortableElement} from 'react-sortable-hoc';
 import {parseGopherUrl} from 'gopher';
 import {Tab} from 'core';
 import {Horizontal} from './Layout';
@@ -24,45 +25,71 @@ export default function Toolbar(p: {
   onSelectTab(tabId: string): void,
   onCreateTab(): void,
   onCloseTab(tabId: string): void,
+  onReorderTab(p: any): void,
 }) {
-  return (
-    <Container>
-      {p.tabs.map((tab) => {
-        if (!tab.history.length) {
-          return <Tab key={tab.id} selected={tab.id === p.selectedTabId} onClick={() => p.onSelectTab(tab.id)}>
-            <IoIosStar size={16}/>
-            <TabTitle>New tab</TabTitle>
-            <IoIosClose size={22} onClick={(e) => {p.onCloseTab(tab.id); e.stopPropagation()}}/>
-          </Tab>
-        }
-
-        const page = tab.history[tab.historyIndex];
-        const {hostname, pathname} = parseGopherUrl(page.url);
-
-        const tabTitle = [
-          page.query ?? capitalized(pathname.replace(/\/$/, '').split('/').slice(-1)[0]),
-          hostname
-        ].filter(Boolean).join(' - ');
-
-        const TabIcon = (
-          page.state === 'loading' ? LoadingIcon :
-          page.type === '1' ? IoIosFolderOpen :
-          page.type === '7' ? IoIosSearch :
-          page.type === '0' ? IoIosDocument :
-          'Ipgj'.includes(page.type) ? IoIosImage :
-          IoIosCloseCircleOutline
-        );
-
-        return <Tab key={tab.id} selected={tab.id === p.selectedTabId} onClick={() => p.onSelectTab(tab.id)}>
-          <TabIcon size={16}/>
-          <TabTitle>{tabTitle}</TabTitle>
-          <IoIosClose size={22} onClick={(e) => {p.onCloseTab(tab.id); e.stopPropagation()}}/>
-        </Tab>
-      })}
-      <ToolbarButton onClick={() => p.onCreateTab()}><IoIosAdd size={22}/></ToolbarButton>
-    </Container>
-  );
+  return <Container>
+    <SortableTabs {...p} axis="x" lockAxis="x" lockToContainerEdges={true} onSortEnd={p.onReorderTab} distance={5}/>
+    <ToolbarButton onClick={() => p.onCreateTab()}><IoIosAdd size={22}/></ToolbarButton>
+  </Container>;
 }
+
+const SortableTabs = SortableContainer((p: {
+  tabs: Tab[],
+  selectedTabId: string,
+  onSelectTab(tabId: string): void,
+  onCreateTab(): void,
+  onCloseTab(tabId: string): void,
+}) => {
+  return <TabContainer>
+    {p.tabs.map((tab, i) => (
+      <SortableTab {...p} tab={tab} key={tab.id} index={i}/>
+    ))}
+  </TabContainer>;
+});
+
+const SortableTab = SortableElement((p: {
+  tab: Tab,
+  selectedTabId: string,
+  onSelectTab(tabId: string): void,
+  onCreateTab(): void,
+  onCloseTab(tabId: string): void,
+}) => {
+  const {tab, selectedTabId} = p;
+  const {history, historyIndex} = tab;
+
+  if (!history.length) {
+    return <Tab key={tab.id} selected={tab.id === selectedTabId} onClick={() => p.onSelectTab(tab.id)}>
+      <IoIosStar size={16}/>
+      <TabTitle>New tab</TabTitle>
+      <IoIosClose size={22} onClick={(e) => {p.onCloseTab(tab.id); e.stopPropagation()}}/>
+    </Tab>
+  }
+
+  const page = history[historyIndex];
+  const {hostname, pathname} = parseGopherUrl(page.url);
+
+  const tabTitle = [
+    page.query ?? capitalized(pathname.replace(/\/$/, '').split('/').slice(-1)[0]),
+    hostname
+  ].filter(Boolean).join(' - ');
+
+  const TabIcon = (
+    page.state === 'loading' ? LoadingIcon :
+    page.type === '1' ? IoIosFolderOpen :
+    page.type === '7' ? IoIosSearch :
+    page.type === '0' ? IoIosDocument :
+    'Ipgj'.includes(page.type) ? IoIosImage :
+    IoIosCloseCircleOutline
+  );
+
+  return (
+    <Tab key={tab.id} selected={tab.id === selectedTabId} onClick={() => p.onSelectTab(tab.id)}>
+      <TabIcon size={16}/>
+      <TabTitle>{tabTitle}</TabTitle>
+      <IoIosClose size={22} onClick={(e) => {p.onCloseTab(tab.id); e.stopPropagation()}}/>
+    </Tab>
+  );
+});
 
 const Container = styled(Horizontal)`
   -webkit-app-region: drag;
@@ -71,6 +98,8 @@ const Container = styled(Horizontal)`
   border-bottom: solid thin #ddd;
   background: #fafafa;
 `;
+
+const TabContainer = styled(Horizontal)``;
 
 const Tab = styled(Horizontal)<{
   selected?: boolean,

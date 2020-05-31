@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import {State, selectTab, createTab, destroyTab, navigateTab} from 'core';
+import {State, selectTab, createTab, destroyTab, reorderTab} from 'core';
 import {Vertical} from 'components/Layout';
 import TabBar from 'components/TabBar';
 import BrowserTab from './BrowserTab';
@@ -14,6 +14,11 @@ export default function Browser(p: {
   if (!tabs.length) createTab(window.id, 'gopher://start');
 
   const tab = p.state.tabs[window.selectedTabId];
+
+  const reorderWindowTab = React.useCallback(({oldIndex, newIndex}) => {
+    const tabId = window.tabs[oldIndex];
+    reorderTab(window.id, tabId, newIndex);
+  }, [window]);
 
   const selectWindowTab = React.useCallback((tabId: string) => {
     selectTab(window.id, tabId);
@@ -33,6 +38,7 @@ export default function Browser(p: {
     <TabBar
       tabs={tabs}
       selectedTabId={window.selectedTabId}
+      onReorderTab={reorderWindowTab}
       onSelectTab={selectWindowTab}
       onCreateTab={createWindowTab}
       onCloseTab={destroyTab}
