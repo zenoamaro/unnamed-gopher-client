@@ -9,9 +9,10 @@ import {createReadStream} from 'streamifier';
 
 const START_PAGE = (`
 iWelcome to your start page!\t\t\t
-1Floodgap\t\tgopher.floodgap.com\t70
 1Bitreich\t\tbitreich.org\t70
+1Floodgap\t\tgopher.floodgap.com\t70
 1SDF\t\tsdf.org\t70
+1Quux\t\tquux.org\t70
 `).trim();
 
 export interface Page {
