@@ -17,13 +17,13 @@ export default function TabHistory(p: {
   React.useEffect(() => {
     if (!$scroller.current) return;
     const $pane = $scroller.current.children[tab.historyIndex];
-    $pane?.scrollIntoView({behavior:'auto', inline:'end'});
+    $pane?.scrollIntoView({behavior:'auto', inline:'center'});
   }, [tab.id])
 
   React.useEffect(() => {
     if (!$scroller.current) return;
     const $pane = $scroller.current.children[tab.historyIndex];
-    $pane?.scrollIntoView({behavior:'smooth', inline:'end'});
+    $pane?.scrollIntoView({behavior:'smooth', inline:'center'});
   }, [$scroller.current, tab.historyIndex])
 
   const [onScroll] = useDebouncedCallback(() => {
@@ -31,14 +31,24 @@ export default function TabHistory(p: {
     const scroll = $scroller.current.scrollLeft;
     const width = $scroller.current.clientWidth;
     const children = Array.from($scroller.current.children);
+    if (!children.length) return;
 
-    for (let {i, $el} of children.map(($el, i) => ({i, $el})).reverse()) {
+    const panes = [
+      {i:0, $el:children[0]},
+      {i:children.length-1, $el:children[children.length-1]},
+      ...children.slice(1, -1).map(($el, i) => ({i:i+1, $el})).reverse(),
+    ];
+
+    for (let {i, $el} of panes) {
       const $pane = $el as HTMLElement;
       const left = $pane.offsetLeft - scroll;
       const start = Math.abs(left);
       const end = Math.abs(width - left - $pane.offsetWidth);
-      if (start <= 2 || end <= 2) {
-        if (i !== tab.historyIndex) navigateTabAt(tab.id, i);
+      const centering = Math.abs(end - start);
+      if (start <= 1 || end <= 1 || centering <= 1) {
+        if (i !== tab.historyIndex) {
+          navigateTabAt(tab.id, i);
+        }
         break;
       }
     }

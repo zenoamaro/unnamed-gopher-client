@@ -31,9 +31,9 @@ export default function TextRenderer(p: {
 const Container = styled.div`
   user-select: text;
   flex: 1 0 auto;
-  width: 642px;
+  width: 664px;
   padding: 24px;
-  scroll-snap-align: end;
+  scroll-snap-align: center;
   overflow: hidden scroll;
   &:first-child, &:not(:last-child){ border-right: solid thin #ddd }
 `;

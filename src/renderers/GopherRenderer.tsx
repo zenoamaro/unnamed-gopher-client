@@ -59,7 +59,7 @@ const Container = styled.div`
   flex: 1 0 auto;
   width: 664px;
   padding: 24px;
-  scroll-snap-align: end;
+  scroll-snap-align: center;
   overflow: hidden scroll;
   font-family: "SF Mono", Menlo, Monaco, monospace;
   font-size: 12px;
