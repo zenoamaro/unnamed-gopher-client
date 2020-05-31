@@ -6,10 +6,10 @@ import {useDebouncedCallback} from 'use-debounce';
 import {Tab, navigateTabAt, useCursor, createTab} from 'core';
 import {VisitUrlOptions} from 'renderers/Renderer';
 import {Horizontal} from 'components/Layout';
-import TabPage from './TabPage';
+import PageView from './PageView';
 
 
-export default function TabHistory(p: {
+export default function HistoryView(p: {
   tabId: string,
   onVisit(url: string, at: number): void,
 }) {
@@ -70,7 +70,7 @@ export default function TabHistory(p: {
         else if (mode === 'tab') createTab('main', url, true);
         else if (mode === 'backgroundTab') createTab('main', url, false);
       }
-      return <TabPage
+      return <PageView
         key={page.id}
         tabId={tab.id}
         pageId={page.id}

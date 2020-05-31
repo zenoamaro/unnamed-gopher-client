@@ -2,14 +2,22 @@ import {ipcRenderer} from 'electron';
 import React from 'react';
 import styled from 'styled-components';
 import * as Gopher from 'gopher';
-import {State, selectTab, createTab, destroyTab, reorderTab, useCursor, Window} from 'core';
 import {Vertical} from 'components/Layout';
 import TabBar from 'components/TabBar';
-import BrowserTab from './BrowserTab';
 import useShortcuts from 'utils/useShortcuts';
 import {capitalized} from 'utils/text';
+import TabView from './TabView';
 
-export default function Browser() {
+import {
+  State,
+  selectTab,
+  createTab,
+  destroyTab,
+  reorderTab,
+  useCursor,
+} from 'core';
+
+export default function BrowserView() {
   const state = useCursor<State>();
 
   const window = state.windows.main;
@@ -21,7 +29,7 @@ export default function Browser() {
   const reorderWindowTab = React.useCallback(({oldIndex, newIndex}) => {
     const tabId = window.tabs[oldIndex];
     reorderTab(window.id, tabId, newIndex);
-  }, [window.id]);
+  }, [window.id, window.tabs]);
 
   const selectWindowTab = React.useCallback((tabId: string) => {
     selectTab(window.id, tabId);
@@ -87,7 +95,7 @@ export default function Browser() {
       createTab={createWindowTab}
       closeTab={destroyTab}
     />
-    {tab? <BrowserTab tabId={tab.id}/> : null}
+    {tab? <TabView tabId={tab.id}/> : null}
   </Container>
 }
 

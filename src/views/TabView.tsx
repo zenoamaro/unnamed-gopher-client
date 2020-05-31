@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import {Vertical} from 'components/Layout';
 import NavBar from 'components/NavBar';
 import useShortcuts from 'utils/useShortcuts';
-import TabHistory from './TabHistory';
+import HistoryView from './HistoryView';
 
 import {
   navigateTabBack,
@@ -15,7 +15,7 @@ import {
 } from 'core';
 
 
-export default function BrowserTab(p: {
+export default function TabView(p: {
   tabId: string,
 }) {
   const {tabId} = p;
@@ -64,7 +64,7 @@ export default function BrowserTab(p: {
       onOpenSettings={openSettings}
     />
 
-    <TabHistory tabId={tab.id} onVisit={navigateThisTab}/>
+    <HistoryView tabId={tab.id} onVisit={navigateThisTab}/>
   </Container>;
 }
 

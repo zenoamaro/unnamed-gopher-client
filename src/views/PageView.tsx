@@ -3,7 +3,7 @@ import {Resource, useCursor, Tab} from 'core';
 import {DetectRenderer} from 'renderers'
 import {VisitUrlOptions} from 'renderers/Renderer';
 
-export default function TabPage(p: {
+export default function PageView(p: {
   tabId: string,
   pageId: string,
   visitUrl(url: string, options: VisitUrlOptions): void,
