@@ -79,6 +79,7 @@ export default function NavBar(p: {
 }
 
 const Container = styled(Horizontal)`
+  z-index: 2;
   height: 38px;
   padding: 4px;
   background: white;
