@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, {keyframes} from 'styled-components';
 import {parseGopherUrl} from 'gopher';
 import {Tab} from 'core';
 import {Horizontal} from './Layout';
@@ -45,7 +45,7 @@ export default function Toolbar(p: {
         ].filter(Boolean).join(' - ');
 
         const TabIcon = (
-          page.state === 'loading' ? IoIosSync :
+          page.state === 'loading' ? LoadingIcon :
           page.type === '1' ? IoIosFolderOpen :
           page.type === '7' ? IoIosSearch :
           page.type === '0' ? IoIosDocument :
@@ -98,4 +98,13 @@ const TabTitle = styled.div`
 const ToolbarButton = styled(Button)`
   align-self: center;
   height: 30px;
+`;
+
+const spin = keyframes`
+  from {transform: rotate(0deg)}
+  to {transform: rotate(360deg)}
+`;
+
+const LoadingIcon = styled(IoIosSync)`
+  animation: ${spin} 1s linear infinite;
 `;
