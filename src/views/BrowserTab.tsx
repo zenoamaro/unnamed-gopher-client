@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import useTraceUpdate from 'use-trace-update';
 import {navigateTabBack, navigateTabForward, navigateTab, Tab, navigatePage} from 'core';
 import {Vertical} from 'components/Layout';
 import NavBar from 'components/NavBar';

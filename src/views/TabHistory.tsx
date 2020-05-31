@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import useTraceUpdate from 'use-trace-update';
 import {useDebouncedCallback} from 'use-debounce';
 
 import {Tab, navigateTabAt} from 'core';
@@ -12,9 +11,6 @@ export default function TabHistory(p: {
   tab: Tab,
   onVisit(url: string, at: number): void,
 }) {
-  // console.log('TabHistory');
-  // useTraceUpdate(p);
-
   const {tab, onVisit} = p;
   const $scroller = React.useRef<HTMLDivElement>(null);
 

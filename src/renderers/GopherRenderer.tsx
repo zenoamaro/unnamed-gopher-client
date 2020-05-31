@@ -40,9 +40,6 @@ export default function GopherRenderer(p: {
   historyIndex: number,
   onVisit(url: string, at: number): void,
 }) {
-  // console.log('GopherRenderer');
-  // useTraceUpdate(p);
-
   return (
     <Container>
       {p.page.content.map((item, i) => (
@@ -74,9 +71,6 @@ export function GopherItem(p: {
   historyIndex: number,
   onVisit(url: string, at: number): void,
 }) {
-  // console.log('GopherItem');
-  // useTraceUpdate(p);
-
   const {item, historyIndex, onVisit} = p;
   const {type, label, url} = item;
   if (type == null || type === '.') return null;

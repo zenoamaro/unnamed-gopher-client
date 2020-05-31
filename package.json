@@ -16,7 +16,6 @@
     "prepublishOnly": "npm run clean && npm run build && npm run test"
   },
   "dependencies": {
-    "baobab": "^2.6.0",
     "immer": "^6.0.9",
     "lodash": "^4.17.15",
     "multipipe": "^4.0.0",
@@ -27,8 +26,7 @@
     "streamifier": "^0.1.1",
     "styled-components": "^5.1.1",
     "through2": "^3.0.1",
-    "use-debounce": "^3.4.2",
-    "use-trace-update": "^1.3.0"
+    "use-debounce": "^3.4.2"
   },
   "devDependencies": {
     "@types/electron-devtools-installer": "^2.2.0",
@@ -37,7 +35,6 @@
     "@types/node": "^12.12.42",
     "@types/react": "^16.9.35",
     "@types/react-dom": "^16.9.8",
-    "@types/react-redux": "^7.1.9",
     "@types/react-sortable-hoc": "^0.7.1",
     "@types/styled-components": "^5.1.0",
     "@types/through2": "^2.0.36",
