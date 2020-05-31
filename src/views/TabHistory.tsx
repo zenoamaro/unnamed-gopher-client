@@ -34,15 +34,18 @@ export default function TabHistory(p: {
     if (!$scroller.current) return;
     const scroll = $scroller.current.scrollLeft;
     const width = $scroller.current.clientWidth;
-    Array.from($scroller.current.children).forEach(($child, i) => {
-      const $pane = $child as HTMLElement;
+    const children = Array.from($scroller.current.children);
+
+    for (let {i, $el} of children.map(($el, i) => ({i, $el})).reverse()) {
+      const $pane = $el as HTMLElement;
       const left = $pane.offsetLeft - scroll;
       const start = Math.abs(left);
       const end = Math.abs(width - left - $pane.offsetWidth);
-      if (start <= 1 || end <= 1) {
+      if (start <= 2 || end <= 2) {
         if (i !== tab.historyIndex) navigateTabAt(tab.id, i);
+        break;
       }
-    })
+    }
   }, 100);
 
   const pages = React.useMemo(() => (

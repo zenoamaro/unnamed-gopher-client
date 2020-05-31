@@ -3,8 +3,8 @@ import installExtension, {REACT_DEVELOPER_TOOLS} from 'electron-devtools-install
 
 function createWindow() {
   let win = new BrowserWindow({
-    width: 1336,
-    height: 768,
+    width: 1300,
+    height: 800,
     titleBarStyle: 'hiddenInset',
     webPreferences: {
       nodeIntegration: true,
