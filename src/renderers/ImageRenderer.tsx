@@ -26,7 +26,7 @@ export default function ImageRenderer(p: {
 
 const Container = styled.div`
   flex: 1 0 auto;
-  width: 650px;
+  width: 800px;
   padding: 24px;
   scroll-snap-align: end;
   overflow: hidden scroll;

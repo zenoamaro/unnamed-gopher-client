@@ -57,7 +57,7 @@ export default function GopherRenderer(p: {
 
 const Container = styled.div`
   flex: 1 0 auto;
-  width: 650px;
+  width: 664px;
   padding: 24px;
   scroll-snap-align: end;
   overflow: hidden scroll;
@@ -107,7 +107,7 @@ export function GopherItem(p: {
 const Line = styled.div`
   position: relative;
   margin: 0 auto;
-  width: 602px;
+  width: 616px;
   padding: 12px 48px;
   border-radius: 8px;
   line-height: 1;

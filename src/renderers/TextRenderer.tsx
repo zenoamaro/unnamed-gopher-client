@@ -19,7 +19,7 @@ export default function TextRenderer(p: {
 const Container = styled.div`
   user-select: text;
   flex: 1 0 auto;
-  width: 650px;
+  width: 642px;
   padding: 24px;
   scroll-snap-align: end;
   overflow: hidden scroll;
