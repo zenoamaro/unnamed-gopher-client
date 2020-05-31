@@ -82,7 +82,7 @@ const Container = styled(Horizontal)`
   height: 38px;
   padding: 4px;
   background: white;
-  border-bottom: solid thin #ddd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .1);
 `;
 
 const ToolbarButton = styled(Button)`

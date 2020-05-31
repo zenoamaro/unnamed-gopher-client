@@ -96,7 +96,7 @@ const Container = styled(Horizontal)`
   height: 38px;
   padding: 0 8px 0 80px;
   border-bottom: solid thin #ddd;
-  background: #fafafa;
+  background: #f0f0f0;
 `;
 
 const TabContainer = styled(Horizontal)``;
