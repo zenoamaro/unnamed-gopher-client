@@ -39,6 +39,8 @@ const Container = styled.div`
 `;
 
 const Text = styled.pre`
+  width: 616px;
+  margin: 0 auto;
   white-space: pre-wrap;
   font-family: "SF Mono", Menlo, Monaco, monospace;
   font-size: 12px;
