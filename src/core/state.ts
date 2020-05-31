@@ -1,13 +1,20 @@
+import React from 'react';
 import produce from 'immer';
+import {get} from 'lodash';
 import Bag from 'utils/Bag';
 
-import {Tab, makeTab} from './tabs';
+import {Tab} from './tabs';
 import {Window, makeWindow} from './windows';
 import {Resource} from 'core/resources';
 
+export interface Cursor<T> {
+  path: string[],
+  setter: (state: T) => void,
+  value: T,
+}
+
 export type Getter<T> = (state: State) => T;
 export type Updater = (state: State) => void;
-export type Listener = (state: State) => void;
 
 export interface State {
   windows: Bag<Window>,
@@ -25,7 +32,7 @@ let state: State = {
   resources: {},
 };
 
-let listeners: Listener[] = [];
+let cursors: Cursor<any>[] = [];
 let nextUpdate: number | null;
 
 export function withState<T>(fn: Getter<T>): T {
@@ -34,13 +41,28 @@ export function withState<T>(fn: Getter<T>): T {
 
 export function update(fn: Updater): void {
   state = produce(state, fn);
+
   if (!nextUpdate) nextUpdate = requestAnimationFrame(() => {
     nextUpdate = null;
-    for (let fn of listeners) fn(state);
+    for (let cur of cursors) updateCursor(cur);
   });
 }
 
-export function listen(fn: Listener): void {
-  listeners.push(fn);
-  fn(state);
+export function updateCursor<T>(cur: Cursor<T>) {
+  const newValue = cur.path.length? get(state, cur.path) : state;
+  if (newValue !== cur.value) cur.setter(newValue);
+}
+
+export function useCursor<T>(path: string[] = []): T {
+  const initialValue = path.length ? get(state, path) : state;
+  const [value, setter] = React.useState<T>(initialValue);
+  const cursor = {path, setter, value};
+
+  React.useEffect(() => {
+    cursors.push(cursor);
+    updateCursor(cursor); // Catch updates that happened before useEffect
+    return () => {cursors = cursors.filter(c => c.setter !== setter)};
+  }, [ JSON.stringify(path) ]);
+
+  return value;
 }

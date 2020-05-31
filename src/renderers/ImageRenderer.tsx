@@ -1,19 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
-import {Page, Resource} from 'core';
+import {RendererProps} from './Renderer';
 
 
-export default function ImageRenderer(p: {
-  page: Page,
-  historyIndex: number,
-  resource: Resource,
-  onVisit(url: string, at: number): void,
-}) {
+export default function ImageRenderer(p: RendererProps) {
   const url = React.useMemo(() => {
-    if (!p.resource) return;
-    const blob = new Blob([p.resource.data], {type:'text/html'});
+    const blob = new Blob([p.data], {type:'text/html'});
     return URL.createObjectURL(blob);
-  }, [p.resource?.timestamp]);
+  }, [p.data]);
 
   return (
     <Container>

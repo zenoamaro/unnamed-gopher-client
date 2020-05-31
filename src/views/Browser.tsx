@@ -1,25 +1,27 @@
 import {ipcRenderer} from 'electron';
 import React from 'react';
 import styled from 'styled-components';
-import {State, selectTab, createTab, destroyTab, reorderTab} from 'core';
+import * as Gopher from 'gopher';
+import {State, selectTab, createTab, destroyTab, reorderTab, useCursor, Window} from 'core';
 import {Vertical} from 'components/Layout';
 import TabBar from 'components/TabBar';
 import BrowserTab from './BrowserTab';
 import useShortcuts from 'utils/useShortcuts';
+import {capitalized} from 'utils/text';
 
-export default function Browser(p: {
-  state: State,
-}) {
-  const window = p.state.windows.main;
-  const tabs = window.tabs.map(tabId => p.state.tabs[tabId]);
+export default function Browser() {
+  const state = useCursor<State>();
+
+  const window = state.windows.main;
+  const tabs = window.tabs.map(tabId => state.tabs[tabId]);
   if (!tabs.length) createTab(window.id, 'gopher://start');
 
-  const tab = p.state.tabs[window.selectedTabId];
+  const tab = state.tabs[window.selectedTabId];
 
   const reorderWindowTab = React.useCallback(({oldIndex, newIndex}) => {
     const tabId = window.tabs[oldIndex];
     reorderTab(window.id, tabId, newIndex);
-  }, [window]);
+  }, [window.id]);
 
   const selectWindowTab = React.useCallback((tabId: string) => {
     selectTab(window.id, tabId);
@@ -41,17 +43,51 @@ export default function Browser(p: {
     else return true;
   }, [window.id, window.selectedTabId]));
 
+  const tabBarTabs = React.useMemo(() => tabs.map((tab) => {
+    const {id, history, historyIndex} = tab;
+
+    if (history.length === 0) {
+      return {id, icon:'IoIosStar', title:'New tab'};
+    }
+
+    const page = history[historyIndex];
+    const {hostname, pathname} = Gopher.parseGopherUrl(page.url);
+
+    if (page.url === 'gopher://start') {
+      return {id, icon:'IoIosStar', title:'Start page'}
+    }
+
+    const title = [
+      page.query ?? capitalized(pathname.replace(/\/$/, '').split('/').slice(-1)[0]),
+      hostname
+    ].filter(Boolean).join(' - ');
+
+    const selector = [page.url, page.query].filter(Boolean).join('\t');
+    const resource = state.resources[selector];
+
+    const icon = (
+      resource?.state === 'loading' ? 'LoadingIcon' :
+      resource?.state === 'error' ? 'IoIosCloseCircleOutline' :
+      page.type === '1' ? 'IoIosFolderOpen' :
+      page.type === '7' ? 'IoIosSearch' :
+      page.type === '0' ? 'IoIosDocument' :
+      'Ipgj'.includes(page.type) ? 'IoIosImage' :
+      'IoIosCloseCircleOutline'
+    );
+
+    return {id, icon, title};
+  }), [tabs, state.resources]);
+
   return <Container>
     <TabBar
-      tabs={tabs}
+      tabs={tabBarTabs}
       selectedTabId={window.selectedTabId}
-      resources={p.state.resources}
-      onReorderTab={reorderWindowTab}
-      onSelectTab={selectWindowTab}
-      onCreateTab={createWindowTab}
-      onCloseTab={destroyTab}
+      reorderTab={reorderWindowTab}
+      selectTab={selectWindowTab}
+      createTab={createWindowTab}
+      closeTab={destroyTab}
     />
-    <BrowserTab tab={tab} resources={p.state.resources}/>
+    {tab? <BrowserTab tabId={tab.id}/> : null}
   </Container>
 }
 

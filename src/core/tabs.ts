@@ -56,24 +56,24 @@ export function refreshTab(tabId: string, at?: number) {
     const tab = state.tabs[tabId];
     return tab.history[at ?? tab.historyIndex];
   });
-  refreshPage(tabId, page.id);
+  if (page) refreshPage(tabId, page.id);
 }
 
-export function pointTabHistoryBack(tabId: string) {
+export function navigateTabBack(tabId: string) {
   update((state) => {
     const tab = state.tabs[tabId];
     tab.historyIndex = Math.max(0, tab.historyIndex-1);
   });
 }
 
-export function pointTabHistoryForward(tabId: string) {
+export function navigateTabForward(tabId: string) {
   update((state) => {
     const tab = state.tabs[tabId];
     tab.historyIndex = Math.min(tab.historyIndex+1, tab.history.length-1);
   });
 }
 
-export function pointTabHistoryAt(tabId: string, at: number) {
+export function navigateTabAt(tabId: string, at: number) {
   update((state) => {
     const tab = state.tabs[tabId];
     tab.historyIndex = Math.max(0, Math.min(at, tab.history.length-1));

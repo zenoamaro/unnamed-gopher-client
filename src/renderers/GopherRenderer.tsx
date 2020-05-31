@@ -1,51 +1,35 @@
-import {shell} from 'electron';
 import React from 'react';
 import styled from 'styled-components';
+import * as Icons from 'react-icons/io';
 import * as Gopher from 'gopher';
-import {Page, createTab, Resource} from 'core';
 import Bag from 'utils/Bag';
+import {RendererProps} from './Renderer';
 
-import {
-  IoIosFolder,
-  IoIosDocument,
-  IoIosImage,
-  IoIosSearch,
-  IoIosCloseCircle,
-  IoIosArchive,
-  IoIosGlobe,
-  IoIosDesktop,
-} from 'react-icons/io';
 
 
 const ICON_MAP: Bag<React.FC<{size: number}>> = {
-  '0': IoIosDocument,
-  '1': IoIosFolder,
-  '2': IoIosDesktop,
-  '3': IoIosCloseCircle,
-  '4': IoIosArchive,
-  '5': IoIosArchive,
-  '6': IoIosArchive,
-  '7': IoIosSearch,
-  '8': IoIosDesktop,
-  '9': IoIosArchive,
-  'd': IoIosDocument,
-  'g': IoIosImage,
-  'h': IoIosGlobe,
-  'I': IoIosImage,
-  'j': IoIosImage,
-  'p': IoIosImage,
+  '0': Icons.IoIosDocument,
+  '1': Icons.IoIosFolder,
+  '2': Icons.IoIosDesktop,
+  '3': Icons.IoIosCloseCircle,
+  '4': Icons.IoIosArchive,
+  '5': Icons.IoIosArchive,
+  '6': Icons.IoIosArchive,
+  '7': Icons.IoIosSearch,
+  '8': Icons.IoIosDesktop,
+  '9': Icons.IoIosArchive,
+  'd': Icons.IoIosDocument,
+  'g': Icons.IoIosImage,
+  'h': Icons.IoIosGlobe,
+  'I': Icons.IoIosImage,
+  'j': Icons.IoIosImage,
+  'p': Icons.IoIosImage,
 };
 
-export default function GopherRenderer(p: {
-  page: Page,
-  historyIndex: number,
-  resource: Resource,
-  onVisit(url: string, at: number): void,
-}) {
+export default function GopherRenderer(p: RendererProps) {
   const parsed = React.useMemo(() => {
-    if (!p.resource) return [];
-    return Gopher.parse(p.resource.data.toString());
-  }, [p.resource?.timestamp]);
+    return Gopher.parse(p.data.toString());
+  }, [p.data]);
 
   return (
     <Container>
@@ -53,8 +37,7 @@ export default function GopherRenderer(p: {
         <GopherItem
           key={i}
           item={item}
-          onVisit={p.onVisit}
-          historyIndex={p.historyIndex}
+          visitUrl={p.visitUrl}
         />
       ))}
     </Container>
@@ -75,30 +58,35 @@ const Container = styled.div`
 
 export function GopherItem(p: {
   item: Gopher.Item,
-  historyIndex: number,
-  onVisit(url: string, at: number): void,
+  visitUrl: RendererProps['visitUrl'],
 }) {
-  const {item, historyIndex, onVisit} = p;
+  const {item, visitUrl} = p;
   const {type, label, url} = item;
   if (type == null || type === '.') return null;
   const Icon = ICON_MAP[type];
 
   const isLinked = !('i37'.includes(type));
   const visit = React.useCallback((e: React.MouseEvent) => {
-    if (!url?.startsWith('gopher://')) return shell.openExternal(url!);
-    if (e.metaKey) createTab('main', url!, e.shiftKey);
-    else if (e.shiftKey) onVisit(url!, historyIndex);
-    else onVisit(url!, historyIndex +1);
-  }, [onVisit, url, historyIndex]);
+    visitUrl(url!, {mode: (
+      e.metaKey && e.shiftKey ? 'tab' :
+      e.metaKey ? 'backgroundTab' :
+      e.shiftKey ? 'replace' :
+      'push'
+    )});
+  }, [visitUrl, url]);
 
   const isSearch = (type === '7');
   const search = React.useCallback((e) => {
     if (e.key !== 'Enter') return;
     const query = (e.target as HTMLInputElement).value;
     const searchUrl = `${url}\t${query}`;
-    if (e.metaKey) createTab('main', searchUrl, e.shiftKey);
-    else onVisit(searchUrl, historyIndex +1);
-  }, [onVisit, historyIndex]);
+    visitUrl(searchUrl, {mode: (
+      e.metaKey && e.shiftKey ? 'tab' :
+      e.metaKey ? 'backgroundTab' :
+      e.shiftKey ? 'replace' :
+      'push'
+    )});
+  }, [visitUrl, url]);
 
   return <Line data-type={type} data-link={isLinked} onClick={isLinked? visit : undefined}>
     {Icon? <LineIcon><Icon size={20}/></LineIcon> : null}

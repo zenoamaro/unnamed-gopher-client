@@ -1,35 +1,26 @@
 import React from 'react';
-import {Page, Resource} from 'core';
-import Bag from 'utils/Bag';
-
-import GopherRenderer from 'renderers/GopherRenderer';
-import TextRenderer from 'renderers/TextRenderer';
-import ImageRenderer from 'renderers/ImageRenderer';
-import HTMLRenderer from 'renderers/HTMLRenderer';
-
-const RENDERER_MAP = {
-  '0': TextRenderer,
-  '1': GopherRenderer,
-  '7': GopherRenderer,
-  'h': HTMLRenderer,
-  'I': ImageRenderer,
-  'p': ImageRenderer,
-  'g': ImageRenderer,
-  'j': ImageRenderer,
-  'default': TextRenderer,
-}
+import {Resource, useCursor, Tab} from 'core';
+import {DetectRenderer} from 'renderers'
+import {VisitUrlOptions} from 'renderers/Renderer';
 
 export default function TabPage(p: {
-  page: Page,
-  historyIndex: number,
-  resources: Bag<Resource>,
-  onVisit(url: string, at: number): void,
+  tabId: string,
+  pageId: string,
+  visitUrl(url: string, options: VisitUrlOptions): void,
 }) {
-  // @ts-ignore indexing
-  const Renderer = RENDERER_MAP[p.page.type] ?? RENDERER_MAP.default;
-  const resource = p.resources[[p.page.url, p.page.query].filter(Boolean).join('\t')];
+  const {tabId, pageId, visitUrl} = p;
+  const tab = useCursor<Tab>(['tabs', tabId]);
+  const page = tab.history.find(p => p.id === pageId)!;
+
+  const selector = [page.url, page.query].filter(Boolean).join('\t');
+  const data = useCursor<Resource['data']>(['resources', selector, 'data']);
 
   return (
-    <Renderer {...p} resource={resource}/>
+    <DetectRenderer
+      type={page.type}
+      url={page.url}
+      data={data}
+      visitUrl={visitUrl}
+    />
   );
 }

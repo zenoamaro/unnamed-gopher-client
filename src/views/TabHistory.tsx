@@ -1,19 +1,21 @@
+import {shell} from 'electron';
 import React from 'react';
 import styled from 'styled-components';
 import {useDebouncedCallback} from 'use-debounce';
 
-import {Tab, pointTabHistoryAt, Resource} from 'core';
+import {Tab, navigateTabAt, useCursor, createTab} from 'core';
+import {VisitUrlOptions} from 'renderers/Renderer';
 import {Horizontal} from 'components/Layout';
 import TabPage from './TabPage';
-import Bag from 'utils/Bag';
 
 
 export default function TabHistory(p: {
-  tab: Tab,
-  resources: Bag<Resource>,
+  tabId: string,
   onVisit(url: string, at: number): void,
 }) {
-  const {tab, resources, onVisit} = p;
+  const {tabId, onVisit} = p;
+  const tab = useCursor<Tab>(['tabs', tabId]);
+
   const $scroller = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
@@ -49,7 +51,7 @@ export default function TabHistory(p: {
       const centering = Math.abs(end - start);
       if (start <= 1 || end <= 1 || centering <= 1) {
         if (i !== tab.historyIndex) {
-          pointTabHistoryAt(tab.id, i);
+          navigateTabAt(tab.id, i);
         }
         break;
       }
@@ -58,15 +60,24 @@ export default function TabHistory(p: {
 
   const pages = React.useMemo(() => (
     tab.history.map((page, i) => {
+      function visitUrl(url: string, options: VisitUrlOptions) {
+        if (!url.startsWith('gopher://')) {
+          return shell.openExternal(url);
+        }
+        const {mode} = options;
+        if (mode === 'push') onVisit(url, i+1);
+        else if (mode === 'replace') onVisit(url, i);
+        else if (mode === 'tab') createTab('main', url, true);
+        else if (mode === 'backgroundTab') createTab('main', url, false);
+      }
       return <TabPage
         key={page.id}
-        historyIndex={i}
-        page={page}
-        resources={resources}
-        onVisit={onVisit}
+        tabId={tab.id}
+        pageId={page.id}
+        visitUrl={visitUrl}
       />
     })
-  ), [onVisit, tab.id, tab.history, p.resources]);
+  ), [tab.history]);
 
   return (
     <Container ref={$scroller} onScroll={onScroll}>

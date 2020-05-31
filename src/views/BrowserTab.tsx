@@ -1,19 +1,25 @@
 import React from 'react';
 import styled from 'styled-components';
-import {pointTabHistoryBack, pointTabHistoryForward, navigateTab, Tab, navigatePage, Resource, refreshPage, refreshTab} from 'core';
 import {Vertical} from 'components/Layout';
 import NavBar from 'components/NavBar';
-import TabHistory from './TabHistory';
 import useShortcuts from 'utils/useShortcuts';
-import Bag from 'utils/Bag';
+import TabHistory from './TabHistory';
+
+import {
+  navigateTabBack,
+  navigateTabForward,
+  navigateTab,
+  Tab,
+  refreshTab,
+  useCursor,
+} from 'core';
 
 
 export default function BrowserTab(p: {
-  tab: Tab,
-  resources: Bag<Resource>,
+  tabId: string,
 }) {
-  const {tab, resources} = p;
-  if (!tab) return null;
+  const {tabId} = p;
+  const tab = useCursor<Tab>(['tabs', tabId]);
 
   const page = tab.history[tab.historyIndex];
   const canRefresh = tab.history.length > 0;
@@ -29,11 +35,11 @@ export default function BrowserTab(p: {
   }, [tab.id]);
 
   const navigateThisTabBack = React.useCallback(() => {
-    pointTabHistoryBack(tab.id);
+    navigateTabBack(tab.id);
   }, [tab.id]);
 
   const navigateThisTabForward = React.useCallback(() => {
-    pointTabHistoryForward(tab.id);
+    navigateTabForward(tab.id);
   }, [tab.id]);
 
   const openSettings = React.useCallback(() => {}, []);
@@ -58,7 +64,7 @@ export default function BrowserTab(p: {
       onOpenSettings={openSettings}
     />
 
-    <TabHistory tab={tab} resources={resources} onVisit={navigateThisTab}/>
+    <TabHistory tabId={tab.id} onVisit={navigateThisTab}/>
   </Container>;
 }
 
