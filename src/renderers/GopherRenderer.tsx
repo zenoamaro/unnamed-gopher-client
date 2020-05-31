@@ -1,3 +1,4 @@
+import {shell} from 'electron';
 import React from 'react';
 import styled from 'styled-components';
 import * as Gopher from 'gopher';
@@ -78,6 +79,7 @@ export function GopherItem(p: {
 
   const isLinked = !('i37'.includes(type));
   const visit = React.useCallback((e: React.MouseEvent) => {
+    if (!url?.startsWith('gopher://')) return shell.openExternal(url!);
     if (e.metaKey) createTab('main', url!, e.shiftKey);
     else if (e.shiftKey) onVisit(url!, historyIndex);
     else onVisit(url!, historyIndex +1);

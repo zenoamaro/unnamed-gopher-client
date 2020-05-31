@@ -1,3 +1,4 @@
+import {shell} from 'electron';
 import React from 'react';
 import styled from 'styled-components';
 import {createTab} from 'core';
@@ -38,8 +39,10 @@ export default function NavBar(p: {
   const submitAddress = React.useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       const url = (e.target as HTMLInputElement).value.trim();
-      if (e.metaKey) createTab('main', url, e.shiftKey);
+      if (url.includes('://') && !url?.startsWith('gopher://')) shell.openExternal(url);
+      else if (e.metaKey) createTab('main', url, e.shiftKey);
       else p.onNavigate(url);
+      setTemporaryUrl(p.url);
       $address.current?.blur();
     } else if (e.key === 'Escape') {
       setTemporaryUrl(p.url);
