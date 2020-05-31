@@ -1,7 +1,9 @@
+import Path from 'path';
 import React from 'react';
 import styled from 'styled-components';
+import Markdown from 'react-markdown';
+import * as Gopher from 'gopher';
 import {Page} from 'core';
-import Bag from 'utils/Bag';
 
 
 export default function TextRenderer(p: {
@@ -9,9 +11,19 @@ export default function TextRenderer(p: {
   historyIndex: number,
   onVisit(url: string, at: number): void,
 }) {
+  const {pathname} = Gopher.parseGopherUrl(p.page.url);
+  const basename = Path.basename(pathname);
+  const ext = Path.extname(basename);
+  const str = p.page.raw.toString();
+
+  const content = (
+    ext === '.md'? <Markdown source={str}/> :
+    <Text>{str}</Text>
+  );
+
   return (
     <Container>
-      {p.page.raw.toString()}
+      {content}
     </Container>
   );
 }
@@ -23,8 +35,11 @@ const Container = styled.div`
   padding: 24px;
   scroll-snap-align: end;
   overflow: hidden scroll;
+  &:first-child, &:not(:last-child){ border-right: solid thin #ddd }
+`;
+
+const Text = styled.pre`
   white-space: pre-wrap;
   font-family: "SF Mono", Menlo, Monaco, monospace;
   font-size: 12px;
-  &:first-child, &:not(:last-child){ border-right: solid thin #ddd }
 `;
