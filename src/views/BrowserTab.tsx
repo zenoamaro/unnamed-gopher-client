@@ -5,6 +5,7 @@ import {navigateTabBack, navigateTabForward, navigateTab, Tab, navigatePage} fro
 import {Vertical} from 'components/Layout';
 import NavBar from 'components/NavBar';
 import TabHistory from './TabHistory';
+import useShortcuts from 'utils/useShortcuts';
 
 
 export default function BrowserTab(p: {
@@ -14,30 +15,39 @@ export default function BrowserTab(p: {
   if (!tab) return null;
 
   const page = tab.history[tab.historyIndex];
+  const canRefresh = tab.history.length > 0;
   const canNavigateBack = tab.historyIndex > 0;
   const canNavigateForward = tab.historyIndex < tab.history.length -1;
 
-  const refreshThisTab = React.useMemo(() => () => {
+  const refreshThisTab = React.useCallback(() => {
     navigatePage(tab.id, page.id, page.url, page.query);
-  }, [tab.id, page.id]);
+  }, [tab.id, page?.id]);
 
-  const navigateThisTab = React.useMemo(() => (url: string, at?: number) => {
+  const navigateThisTab = React.useCallback((url: string, at?: number) => {
     navigateTab(tab.id, url, at);
   }, [tab.id]);
 
-  const navigateThisTabBack = React.useMemo(() => () => {
+  const navigateThisTabBack = React.useCallback(() => {
     navigateTabBack(tab.id);
   }, [tab.id]);
 
-  const navigateThisTabForward = React.useMemo(() => () => {
+  const navigateThisTabForward = React.useCallback(() => {
     navigateTabForward(tab.id);
   }, [tab.id]);
 
-  const openSettings = React.useMemo(() => () => {}, []);
+  const openSettings = React.useCallback(() => {}, []);
+
+  useShortcuts(React.useCallback((e: KeyboardEvent) => {
+    if (e.metaKey && e.key === 'r') refreshThisTab();
+    else if (e.metaKey && e.key === 'ArrowLeft') navigateThisTabBack();
+    else if (e.metaKey && e.key === 'ArrowRight') navigateThisTabForward();
+    else return true;
+  }, [refreshThisTab]));
 
   return <Container>
     <NavBar
       url={page?.url}
+      canRefresh={canRefresh}
       canNavigateBack={canNavigateBack}
       canNavigateForward={canNavigateForward}
       onRefresh={refreshThisTab}

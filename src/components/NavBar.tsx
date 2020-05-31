@@ -15,6 +15,7 @@ export default function NavBar(p: {
   url: string,
   onNavigate(url: string): void,
   onRefresh(): void,
+  canRefresh: boolean,
   canNavigateBack: boolean,
   canNavigateForward: boolean,
   onNavigateBack(): void,
@@ -22,10 +23,12 @@ export default function NavBar(p: {
 
   onOpenSettings(): void,
 }) {
+  const $address = React.useRef<HTMLInputElement>(null);
   const [temporaryUrl, setTemporaryUrl] = React.useState(p.url);
 
   React.useEffect(() => {
     setTemporaryUrl(p.url);
+    if (!p.url) $address.current?.focus();
   }, [p.url]);
 
   const changeAddress = React.useCallback((e: React.ChangeEvent) => {
@@ -49,11 +52,12 @@ export default function NavBar(p: {
       <IoIosArrowForward size={22}/>
     </ToolbarButton>
 
-    <ToolbarButton disabled={!p.url} onClick={p.onRefresh}>
+    <ToolbarButton disabled={!p.canRefresh} onClick={p.onRefresh}>
       <IoIosRefresh size={22}/>
     </ToolbarButton>
 
     <AddressField
+      ref={$address}
       value={temporaryUrl ?? ''}
       onChange={changeAddress}
       placeholder="Search or enter address"
