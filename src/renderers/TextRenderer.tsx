@@ -3,23 +3,27 @@ import React from 'react';
 import styled from 'styled-components';
 import Markdown from 'react-markdown';
 import * as Gopher from 'gopher';
-import {Page} from 'core';
+import {Page, Resource} from 'core';
 
 
 export default function TextRenderer(p: {
   page: Page,
   historyIndex: number,
+  resource: Resource,
   onVisit(url: string, at: number): void,
 }) {
-  const {pathname} = Gopher.parseGopherUrl(p.page.url);
-  const basename = Path.basename(pathname);
-  const ext = Path.extname(basename);
-  const str = p.page.raw.toString();
+  const content = React.useMemo(() => {
+    if (!p.resource) return null;
+    const {pathname} = Gopher.parseGopherUrl(p.page.url);
+    const basename = Path.basename(pathname);
+    const ext = Path.extname(basename);
+    const str = p.resource.data.toString();
 
-  const content = (
-    ext === '.md'? <Markdown source={str}/> :
-    <Text>{str}</Text>
-  );
+    return (
+      ext === '.md'? <Markdown source={str}/> :
+      <Text>{str}</Text>
+    );
+  }, [p.resource?.timestamp]);
 
   return (
     <Container>

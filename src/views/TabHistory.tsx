@@ -2,16 +2,18 @@ import React from 'react';
 import styled from 'styled-components';
 import {useDebouncedCallback} from 'use-debounce';
 
-import {Tab, navigateTabAt} from 'core';
+import {Tab, pointTabHistoryAt, Resource} from 'core';
 import {Horizontal} from 'components/Layout';
 import TabPage from './TabPage';
+import Bag from 'utils/Bag';
 
 
 export default function TabHistory(p: {
   tab: Tab,
+  resources: Bag<Resource>,
   onVisit(url: string, at: number): void,
 }) {
-  const {tab, onVisit} = p;
+  const {tab, resources, onVisit} = p;
   const $scroller = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
@@ -47,7 +49,7 @@ export default function TabHistory(p: {
       const centering = Math.abs(end - start);
       if (start <= 1 || end <= 1 || centering <= 1) {
         if (i !== tab.historyIndex) {
-          navigateTabAt(tab.id, i);
+          pointTabHistoryAt(tab.id, i);
         }
         break;
       }
@@ -55,10 +57,16 @@ export default function TabHistory(p: {
   }, 100);
 
   const pages = React.useMemo(() => (
-    tab.history.map((page, i) => (
-      <TabPage key={page.id} historyIndex={i} page={page} onVisit={p.onVisit}/>
-    ))
-  ), [onVisit, tab.id, tab.history]);
+    tab.history.map((page, i) => {
+      return <TabPage
+        key={page.id}
+        historyIndex={i}
+        page={page}
+        resources={resources}
+        onVisit={onVisit}
+      />
+    })
+  ), [onVisit, tab.id, tab.history, p.resources]);
 
   return (
     <Container ref={$scroller} onScroll={onScroll}>

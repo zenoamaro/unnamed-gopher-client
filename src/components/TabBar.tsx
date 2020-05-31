@@ -2,9 +2,10 @@ import React from 'react';
 import styled, {keyframes} from 'styled-components';
 import {SortableContainer, SortableElement} from 'react-sortable-hoc';
 import {parseGopherUrl} from 'gopher';
-import {Tab} from 'core';
+import {Tab, Resource} from 'core';
 import {Horizontal} from './Layout';
 import Button from './Button';
+import Bag from 'utils/Bag';
 import {capitalized} from 'utils/text';
 
 import {
@@ -22,6 +23,7 @@ import {
 export default function Toolbar(p: {
   tabs: Tab[],
   selectedTabId: string,
+  resources: Bag<Resource>,
   onSelectTab(tabId: string): void,
   onCreateTab(): void,
   onCloseTab(tabId: string): void,
@@ -36,6 +38,7 @@ export default function Toolbar(p: {
 const SortableTabs = SortableContainer((p: {
   tabs: Tab[],
   selectedTabId: string,
+  resources: Bag<Resource>,
   onSelectTab(tabId: string): void,
   onCreateTab(): void,
   onCloseTab(tabId: string): void,
@@ -50,6 +53,7 @@ const SortableTabs = SortableContainer((p: {
 const SortableTab = SortableElement((p: {
   tab: Tab,
   selectedTabId: string,
+  resources: Bag<Resource>,
   onSelectTab(tabId: string): void,
   onCreateTab(): void,
   onCloseTab(tabId: string): void,
@@ -73,8 +77,12 @@ const SortableTab = SortableElement((p: {
     hostname
   ].filter(Boolean).join(' - ');
 
+  const resource = p.resources[[page.url, page.query].filter(Boolean).join('\t')];
+
   const TabIcon = (
-    page.state === 'loading' ? LoadingIcon :
+    // FIXME
+    resource?.state === 'loading' ? LoadingIcon :
+    resource?.state === 'error' ? IoIosCloseCircleOutline :
     page.type === '1' ? IoIosFolderOpen :
     page.type === '7' ? IoIosSearch :
     page.type === '0' ? IoIosDocument :

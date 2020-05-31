@@ -2,7 +2,7 @@ import {shell} from 'electron';
 import React from 'react';
 import styled from 'styled-components';
 import * as Gopher from 'gopher';
-import {Page, createTab} from 'core';
+import {Page, createTab, Resource} from 'core';
 import Bag from 'utils/Bag';
 
 import {
@@ -39,11 +39,17 @@ const ICON_MAP: Bag<React.FC<{size: number}>> = {
 export default function GopherRenderer(p: {
   page: Page,
   historyIndex: number,
+  resource: Resource,
   onVisit(url: string, at: number): void,
 }) {
+  const parsed = React.useMemo(() => {
+    if (!p.resource) return [];
+    return Gopher.parse(p.resource.data.toString());
+  }, [p.resource?.timestamp]);
+
   return (
     <Container>
-      {p.page.content.map((item, i) => (
+      {parsed.map((item, i) => (
         <GopherItem
           key={i}
           item={item}

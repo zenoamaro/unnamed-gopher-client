@@ -8,7 +8,7 @@ import BrowserTab from './BrowserTab';
 import useShortcuts from 'utils/useShortcuts';
 
 export default function Browser(p: {
-  state: State
+  state: State,
 }) {
   const window = p.state.windows.main;
   const tabs = window.tabs.map(tabId => p.state.tabs[tabId]);
@@ -23,7 +23,7 @@ export default function Browser(p: {
 
   const selectWindowTab = React.useCallback((tabId: string) => {
     selectTab(window.id, tabId);
-  }, [window.id])
+  }, [window.id]);
 
   const createWindowTab = React.useCallback(() => {
     createTab(window.id);
@@ -45,12 +45,13 @@ export default function Browser(p: {
     <TabBar
       tabs={tabs}
       selectedTabId={window.selectedTabId}
+      resources={p.state.resources}
       onReorderTab={reorderWindowTab}
       onSelectTab={selectWindowTab}
       onCreateTab={createWindowTab}
       onCloseTab={destroyTab}
     />
-    <BrowserTab tab={tab}/>
+    <BrowserTab tab={tab} resources={p.state.resources}/>
   </Container>
 }
 

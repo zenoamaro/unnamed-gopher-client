@@ -1,5 +1,5 @@
 import React from 'react';
-import {Page} from 'core';
+import {Page, Resource} from 'core';
 import Bag from 'utils/Bag';
 
 import GopherRenderer from 'renderers/GopherRenderer';
@@ -22,12 +22,14 @@ const RENDERER_MAP = {
 export default function TabPage(p: {
   page: Page,
   historyIndex: number,
+  resources: Bag<Resource>,
   onVisit(url: string, at: number): void,
 }) {
   // @ts-ignore indexing
   const Renderer = RENDERER_MAP[p.page.type] ?? RENDERER_MAP.default;
+  const resource = p.resources[[p.page.url, p.page.query].filter(Boolean).join('\t')];
 
   return (
-    <Renderer {...p}/>
+    <Renderer {...p} resource={resource}/>
   );
 }

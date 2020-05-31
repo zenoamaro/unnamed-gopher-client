@@ -1,18 +1,22 @@
 import React from 'react';
 import styled from 'styled-components';
-import {Page} from 'core';
+import {Page, Resource} from 'core';
 
 
 export default function HTMLRenderer(p: {
   page: Page,
   historyIndex: number,
+  resource: Resource,
   onVisit(url: string, at: number): void,
 }) {
-  const blob = new Blob([p.page.raw], {type:'text/html'});
-  const obj = URL.createObjectURL(blob);
+  const url = React.useMemo(() => {
+    if (!p.resource) return;
+    const blob = new Blob([p.resource.data], {type:'text/html'});
+    return URL.createObjectURL(blob);
+  }, [p.resource?.timestamp]);
 
   return (
-    <Frame src={obj} sandbox=""/>
+    <Frame src={url} sandbox=""/>
   );
 }
 

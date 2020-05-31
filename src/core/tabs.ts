@@ -1,6 +1,6 @@
 import {uniqueId} from 'lodash';
-import {update} from './state';
-import {makePage, Page, navigatePage} from './pages';
+import {update, withState} from './state';
+import {makePage, Page, navigatePage, refreshPage} from './pages';
 
 
 export interface Tab {
@@ -39,7 +39,7 @@ export function destroyTab(tabId: string) {
   });
 }
 
-export function navigateTab(tabId: string, url: string, at?: number) {
+export function navigateTab(tabId: string, url: string, at?: number, fresh = false) {
   let page = makePage(url);
   update((state) => {
     const tab = state.tabs[tabId];
@@ -48,26 +48,34 @@ export function navigateTab(tabId: string, url: string, at?: number) {
     tab.history.push(page);
     tab.historyIndex = tab.history.length -1;
   });
-  navigatePage(tabId, page.id, url);
+  navigatePage(tabId, page.id, url, undefined, fresh);
 }
 
-export function navigateTabBack(tabId: string) {
+export function refreshTab(tabId: string, at?: number) {
+  const page = withState((state) => {
+    const tab = state.tabs[tabId];
+    return tab.history[at ?? tab.historyIndex];
+  });
+  refreshPage(tabId, page.id);
+}
+
+export function pointTabHistoryBack(tabId: string) {
   update((state) => {
     const tab = state.tabs[tabId];
     tab.historyIndex = Math.max(0, tab.historyIndex-1);
   });
 }
 
-export function navigateTabForward(tabId: string) {
+export function pointTabHistoryForward(tabId: string) {
   update((state) => {
     const tab = state.tabs[tabId];
     tab.historyIndex = Math.min(tab.historyIndex+1, tab.history.length-1);
   });
 }
 
-export function navigateTabAt(tabId: string, index: number) {
+export function pointTabHistoryAt(tabId: string, at: number) {
   update((state) => {
     const tab = state.tabs[tabId];
-    tab.historyIndex = Math.max(0, Math.min(index, tab.history.length-1));
+    tab.historyIndex = Math.max(0, Math.min(at, tab.history.length-1));
   });
 }
