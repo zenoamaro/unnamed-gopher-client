@@ -34,8 +34,8 @@ export default function TabHistory(p: {
     if (!children.length) return;
 
     const panes = [
-      {i:0, $el:children[0]},
       {i:children.length-1, $el:children[children.length-1]},
+      {i:0, $el:children[0]},
       ...children.slice(1, -1).map(($el, i) => ({i:i+1, $el})).reverse(),
     ];
 
