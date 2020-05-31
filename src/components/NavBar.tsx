@@ -40,6 +40,10 @@ export default function NavBar(p: {
       const url = (e.target as HTMLInputElement).value.trim();
       if (e.metaKey) createTab('main', url);
       else p.onNavigate(url);
+      $address.current?.blur();
+    } else if (e.key === 'Escape') {
+      setTemporaryUrl(p.url);
+      $address.current?.blur();
     }
   }, [p.onNavigate]);
 
