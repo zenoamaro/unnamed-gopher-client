@@ -84,7 +84,7 @@ export function GopherItem(p: {
 
   const isLinked = !('i37'.includes(type));
   const visit = React.useCallback((e: React.MouseEvent) => {
-    if (e.metaKey) createTab('main', url!);
+    if (e.metaKey) createTab('main', url!, e.shiftKey);
     else if (e.shiftKey) onVisit(url!, historyIndex);
     else onVisit(url!, historyIndex +1);
   }, [onVisit, url, historyIndex]);
@@ -94,7 +94,7 @@ export function GopherItem(p: {
     if (e.key !== 'Enter') return;
     const query = (e.target as HTMLInputElement).value;
     const searchUrl = `${url}\t${query}`;
-    if (e.metaKey) createTab('main', searchUrl);
+    if (e.metaKey) createTab('main', searchUrl, e.shiftKey);
     else onVisit(searchUrl, historyIndex +1);
   }, [onVisit, historyIndex]);
 

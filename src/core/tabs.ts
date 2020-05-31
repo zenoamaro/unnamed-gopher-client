@@ -17,13 +17,13 @@ export function makeTab(url?: string) {
   };
 }
 
-export function createTab(windowId: string, url?: string) {
+export function createTab(windowId: string, url?: string, select: boolean = true) {
   const tab = makeTab(url);
   update((state) => {
     const window = state.windows.main;
     state.tabs[tab.id] = tab;
     window.tabs.push(tab.id);
-    window.selectedTabId = tab.id;
+    if (select) window.selectedTabId = tab.id;
   });
   if (url) navigateTab(tab.id, url);
 }

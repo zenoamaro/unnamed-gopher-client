@@ -38,7 +38,7 @@ export default function NavBar(p: {
   const submitAddress = React.useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       const url = (e.target as HTMLInputElement).value.trim();
-      if (e.metaKey) createTab('main', url);
+      if (e.metaKey) createTab('main', url, e.shiftKey);
       else p.onNavigate(url);
       $address.current?.blur();
     } else if (e.key === 'Escape') {
