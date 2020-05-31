@@ -1,0 +1,18 @@
+productName: Unnamed Gopher Client
+appId: com.zenoamaro.unnamed-gopher-client
+copyright: Copyright © 2020 zenoamaro <zenoamaro@gmail.com>
+
+directories:
+  buildResources: build
+  output: dist
+
+files:
+  - build/**/*
+
+protocols:
+  - name: Gopher URL
+    role: Viewer
+    schemes: ["gopher"]
+
+mac:
+  category: ""

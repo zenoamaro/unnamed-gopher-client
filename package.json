@@ -3,16 +3,24 @@
   "name": "unnamed-gopher-client",
   "version": "0.0.1",
   "description": "",
-  "author": "zenoamaro <zenoamaro@gmail.com>",
+  "author": {
+    "name": "zenoamaro",
+    "email": "zenoamaro@gmail.com"
+  },
   "license": "MIT",
-  "keywords": [],
+  "keywords": [
+    "gopher",
+    "gopherhole"
+  ],
   "homepage": "https://github.com/zenoamaro/unnamed-gopher-client",
   "repository": "git@github.com:zenojevski/unnamed-gopher-client.git",
+  "main": "build/main.js",
   "scripts": {
-    "start": "electron dist/main",
+    "start": "electron .",
     "build": "webpack --mode production",
     "watch": "webpack-dev-server --watch --mode development",
-    "clean": "rm -rf dist",
+    "dist": "electron-builder build",
+    "clean": "rm -rf build dist",
     "prepublishOnly": "npm run clean && npm run build && npm run test"
   },
   "dependencies": {
@@ -40,6 +48,7 @@
     "@types/styled-components": "^5.1.0",
     "@types/through2": "^2.0.36",
     "electron": "^9.0.0",
+    "electron-builder": "^22.7.0",
     "electron-devtools-installer": "^3.0.0",
     "file-loader": "^6.0.0",
     "ts-loader": "^7.0.5",

@@ -25,13 +25,13 @@ const config = (name, entry, target) => ({
   },
 
   output: {
-    path: dir('dist'),
+    path: dir('build'),
     filename: '[name].js',
   },
 
   devServer: {
     writeToDisk: true,
-    contentBase: dir('dist'),
+    contentBase: dir('build'),
     stats: 'errors-only',
   },
 });

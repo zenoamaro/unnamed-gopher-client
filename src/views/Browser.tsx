@@ -1,3 +1,4 @@
+import {ipcRenderer} from 'electron';
 import React from 'react';
 import styled from 'styled-components';
 import {State, selectTab, createTab, destroyTab, reorderTab} from 'core';
@@ -27,6 +28,12 @@ export default function Browser(p: {
   const createWindowTab = React.useCallback(() => {
     createTab(window.id);
   }, [window.id]);
+
+  React.useEffect(() => {
+    ipcRenderer.on('deep-link', function (e, url) {
+      createTab('main', url);
+    });
+  }, []);
 
   useShortcuts(React.useCallback((e: KeyboardEvent) => {
     if (e.metaKey && e.key === 't') createTab(window.id);

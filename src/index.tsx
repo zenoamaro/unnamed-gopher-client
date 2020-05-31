@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {listen} from 'core';
+import {listen, createTab} from 'core';
 import App from './views';
 
 import './assets/app.html';
