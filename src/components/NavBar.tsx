@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import {createTab} from 'core';
 import {Horizontal} from './Layout';
 import Button from './Button';
 
@@ -7,13 +8,13 @@ import {
   IoIosArrowBack,
   IoIosArrowForward,
   IoIosSettings,
+  IoIosRefresh,
 } from 'react-icons/io'
-import {createTab} from 'core';
 
 export default function NavBar(p: {
   url: string,
   onNavigate(url: string): void,
-
+  onRefresh(): void,
   canNavigateBack: boolean,
   canNavigateForward: boolean,
   onNavigateBack(): void,
@@ -46,6 +47,10 @@ export default function NavBar(p: {
 
     <ToolbarButton disabled={!p.canNavigateForward} onClick={p.onNavigateForward}>
       <IoIosArrowForward size={22}/>
+    </ToolbarButton>
+
+    <ToolbarButton disabled={!p.url} onClick={p.onRefresh}>
+      <IoIosRefresh size={22}/>
     </ToolbarButton>
 
     <AddressField
