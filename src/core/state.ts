@@ -8,6 +8,7 @@ import {Bookmark, makeBookmark} from './bookmarks';
 import {Tab} from './tabs';
 import {Window, makeWindow} from './windows';
 import {Resource} from 'core/resources';
+import {Recent} from 'core/recents';
 
 export interface Cursor<T> {
   path: string[],
@@ -23,6 +24,7 @@ export interface State {
   tabs: Bag<Tab>,
   resources: Bag<Resource>,
   bookmarks: Bag<Bookmark>,
+  recents: Bag<Recent>,
 }
 
 const initialWindow = makeWindow([]);
@@ -41,6 +43,7 @@ let state: State = {
   tabs: {},
   resources: {},
   bookmarks: initialBookmarks,
+  recents: {},
 };
 
 let cursors: Cursor<any>[] = [];

@@ -42,7 +42,8 @@ export function destroyTab(tabId: string) {
 }
 
 export function navigateTab(tabId: string, url: string, at?: number, fresh = false) {
-  let page = makePage(url);
+  // FIXME
+  const page = makePage('', '');
   update((state) => {
     const tab = state.tabs[tabId];
     if (at == null) at = tab.historyIndex;

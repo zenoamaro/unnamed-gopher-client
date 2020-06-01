@@ -63,16 +63,10 @@ export default function BrowserView() {
     }
 
     const page = history[historyIndex];
-    const {hostname, pathname} = Gopher.parseGopherUrl(page.url);
 
     if (page.url === 'gopher://start') {
       return {id, icon:'IoIosStar', title:'Start page'}
     }
-
-    const title = [
-      page.query ?? capitalized(pathname.replace(/\/$/, '').split('/').slice(-1)[0]),
-      hostname
-    ].filter(Boolean).join(' - ');
 
     const selector = [page.url, page.query].filter(Boolean).join('\t');
     const resource = state.resources[selector];
@@ -87,7 +81,7 @@ export default function BrowserView() {
       'IoIosCloseCircleOutline'
     );
 
-    return {id, icon, title};
+    return {id, icon, title: page.title};
   }), [tabs, state.resources]);
 
   return <Container>

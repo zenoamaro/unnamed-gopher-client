@@ -15,7 +15,7 @@ export function makeBookmark(title: string, type: string, url: string, query?: s
     title,
     url,
     query,
-    type: '1',
+    type,
   };
 }
 

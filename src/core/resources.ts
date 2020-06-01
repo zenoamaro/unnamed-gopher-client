@@ -69,11 +69,20 @@ export function fetchResource(url: string, fresh = false) {
 }
 
 export function requestStartPage() {
-  const items = withState((state) => {
+  const bookmarks = withState((state) => {
     return Object.values(state.bookmarks).map((b) => {
       const url = Gopher.parseGopherUrl(b.url);
       return `${b.type}${b.title}\t${url.path}\t${url.hostname}\t${url.port}`;
     });
+  });
+
+  const recents = withState((state) => {
+    return Object.values(state.recents)
+      .sort((a, b) => b.timestamp - a.timestamp)
+      .map((b) => {
+        const url = Gopher.parseGopherUrl(b.url);
+        return `${b.type}${b.title}\t${url.path}\t${url.hostname}\t${url.port}`;
+      });
   });
 
   const data = [
@@ -81,7 +90,9 @@ export function requestStartPage() {
     `7Search\t/v2/vs\tgopher.floodgap.com\t70`,
     `i\t\t\t`,
     `iYour bookmarks\t\t\t`,
-    ...items,
+    ...bookmarks,
+    `iRecently visited\t\t\t`,
+    ...recents,
   ].join('\n');
 
   return createReadStream(data);

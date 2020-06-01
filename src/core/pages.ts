@@ -2,19 +2,23 @@ import {URL} from 'url';
 import {uniqueId} from 'lodash';
 import * as Gopher from 'gopher';
 import {update, withState} from './state';
+import {createRecent} from './recents';
 import {fetchResource} from './resources';
+import {capitalized} from 'utils/text';
 
 export interface Page {
   id: string,
+  title: string,
   url: string,
   query?: string,
   type: string,
   scroll: number,
 }
 
-export function makePage(url: string, query?: string): Page {
+export function makePage(title: string, url: string, query?: string): Page {
   return {
     id: uniqueId('page'),
+    title,
     url,
     query,
     type: '1',
@@ -47,13 +51,27 @@ export function navigatePage(tabId: string, pageId: string, url: string, query?:
 
   const parsedUrl = Gopher.parseGopherUrl(url);
 
+  const title = [
+    query ?? capitalized(parsedUrl.pathname.replace(/\/$/, '').split('/').slice(-1)[0]),
+    parsedUrl.hostname,
+  ].filter(Boolean).join(' - ');
+
+  let changedUrl = false;
   update((state) => {
     const tab = state.tabs[tabId]!;
     const page = tab.history.find(p => p.id === pageId)!;
+    if (page.url !== url) changedUrl = true;
+    page.title = title;
     page.type = parsedUrl.type || '1';
     page.url = url;
     page.query = query;
   });
+
+  if (changedUrl) {
+    // TODO Figure out how to have search
+    if (parsedUrl.type === '7') return;
+    createRecent(title, parsedUrl.type || '1', url, query);
+  }
 
   fetchResource([url, query].filter(Boolean).join('\t'), fresh);
 }
