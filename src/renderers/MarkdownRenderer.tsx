@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Markdown from 'react-markdown';
+import {useScrollRestoration} from 'utils/useScrollRestoration';
 import {RendererProps} from './Renderer';
 
 
@@ -9,8 +10,10 @@ export default function MarkdownRenderer(p: RendererProps) {
     <Content source={p.data.toString()}/>
   ), [p.url, p.data]);
 
+  const $scroller = useScrollRestoration(p.scroll, p.onScroll);
+
   return (
-    <Container>
+    <Container ref={$scroller}>
       {content}
     </Container>
   );

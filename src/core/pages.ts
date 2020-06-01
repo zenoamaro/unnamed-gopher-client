@@ -9,6 +9,7 @@ export interface Page {
   url: string,
   query?: string,
   type: string,
+  scroll: number,
 }
 
 export function makePage(url: string, query?: string): Page {
@@ -17,7 +18,18 @@ export function makePage(url: string, query?: string): Page {
     url,
     query,
     type: '1',
+    scroll: 0,
   };
+}
+
+export function scrollPage(tabId: string, pageId: string, scroll: number) {
+  update((state) => {
+    const tab = state.tabs[tabId]!;
+    if (!tab) return;
+    const pageIndex = tab.history.findIndex(p => p.id === pageId);
+    if (pageIndex === -1) return;
+    tab.history[pageIndex].scroll = scroll;
+  });
 }
 
 export function navigatePage(tabId: string, pageId: string, url: string, query?: string, fresh = false) {

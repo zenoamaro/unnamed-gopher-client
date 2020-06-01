@@ -1,5 +1,5 @@
 import React from 'react';
-import {Resource, useCursor, Tab} from 'core';
+import {Resource, useCursor, Tab, scrollPage} from 'core';
 import {DetectRenderer} from 'renderers'
 import {VisitUrlOptions} from 'renderers/Renderer';
 
@@ -15,11 +15,17 @@ export default function PageView(p: {
   const selector = [page.url, page.query].filter(Boolean).join('\t');
   const data = useCursor<Resource['data']>(['resources', selector, 'data']);
 
+  const setScroll = React.useCallback((scroll: number) => {
+    scrollPage(tab.id, page.id, scroll);
+  }, [tab.id, page.id]);
+
   return (
     <DetectRenderer
       type={page.type}
       url={page.url}
       data={data}
+      scroll={page.scroll}
+      onScroll={setScroll}
       visitUrl={visitUrl}
     />
   );

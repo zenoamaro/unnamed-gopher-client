@@ -2,18 +2,24 @@ import Path from 'path';
 import React from 'react';
 import styled from 'styled-components';
 import * as Gopher from 'gopher';
+import {useScrollRestoration} from 'utils/useScrollRestoration';
 import {RendererProps} from './Renderer';
 import MarkdownRenderer from 'renderers/MarkdownRenderer';
 
 
 export default function TextRenderer(p: RendererProps) {
+  const $scroller = useScrollRestoration(p.scroll, p.onScroll);
+
   const content = React.useMemo(() => {
     const {pathname} = Gopher.parseGopherUrl(p.url);
     const basename = Path.basename(pathname);
     const ext = Path.extname(basename);
 
     if (ext === '.md') return <MarkdownRenderer {...p}/>;
-    return <Container><Content>{p.data.toString()}</Content></Container>;
+
+    return <Container ref={$scroller}>
+      <Content>{p.data.toString()}</Content>
+    </Container>;
   }, [p.url, p.data]);
 
   return content;

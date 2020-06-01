@@ -5,6 +5,8 @@ export type Renderer = (props: RendererProps) => React.ReactElement;
 export interface RendererProps {
   url: string,
   data: Buffer,
+  scroll?: number,
+  onScroll: (scroll: number) => void,
   visitUrl: (url: string, options: VisitUrlOptions) => void,
 }
 

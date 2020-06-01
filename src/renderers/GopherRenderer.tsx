@@ -1,8 +1,9 @@
 import React from 'react';
-import styled from 'styled-components';
 import * as Icons from 'react-icons/io';
+import styled from 'styled-components';
 import * as Gopher from 'gopher';
 import Bag from 'utils/Bag';
+import {useScrollRestoration} from 'utils/useScrollRestoration';
 import {RendererProps} from './Renderer';
 
 
@@ -31,14 +32,12 @@ export default function GopherRenderer(p: RendererProps) {
     return Gopher.parse(p.data.toString());
   }, [p.data]);
 
+  const $scroller = useScrollRestoration(p.scroll, p.onScroll);
+
   return (
-    <Container>
+    <Container ref={$scroller}>
       {parsed.map((item, i) => (
-        <GopherItem
-          key={i}
-          item={item}
-          visitUrl={p.visitUrl}
-        />
+        <GopherItem key={i} item={item} visitUrl={p.visitUrl}/>
       ))}
     </Container>
   );
