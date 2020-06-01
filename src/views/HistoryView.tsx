@@ -18,13 +18,13 @@ export default function HistoryView(p: {
 
   const $scroller = React.useRef<HTMLDivElement>(null);
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     if (!$scroller.current) return;
     const $pane = $scroller.current.children[tab.historyIndex];
     $pane?.scrollIntoView({behavior:'auto', inline:'center'});
   }, [tab.id])
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     if (!$scroller.current) return;
     const $pane = $scroller.current.children[tab.historyIndex];
     $pane?.scrollIntoView({behavior:'smooth', inline:'center'});
@@ -50,9 +50,7 @@ export default function HistoryView(p: {
       const end = Math.abs(width - left - $pane.offsetWidth);
       const centering = Math.abs(end - start);
       if (start <= 1 || end <= 1 || centering <= 1) {
-        if (i !== tab.historyIndex) {
-          navigateTabAt(tab.id, i);
-        }
+        if (i !== tab.historyIndex) navigateTabAt(tab.id, i);
         break;
       }
     }
