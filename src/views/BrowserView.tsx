@@ -15,6 +15,8 @@ import {
   destroyTab,
   reorderTab,
   useCursor,
+  selectPreviousTab,
+  selectNextTab,
 } from 'core';
 
 export default function BrowserView() {
@@ -48,6 +50,8 @@ export default function BrowserView() {
   useShortcuts(React.useCallback((e: KeyboardEvent) => {
     if (e.metaKey && e.key === 't') createTab(window.id);
     else if (e.metaKey && e.key === 'w') destroyTab(window.selectedTabId);
+    else if (e.metaKey && e.key === '[') selectPreviousTab(window.id);
+    else if (e.metaKey && e.key === ']') selectNextTab(window.id);
     else return true;
   }, [window.id, window.selectedTabId]));
 
