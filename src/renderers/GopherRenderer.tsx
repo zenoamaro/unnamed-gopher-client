@@ -45,14 +45,13 @@ export default function GopherRenderer(p: RendererProps) {
 }
 
 const Container = styled.div`
-  flex: 1 0 auto;
+  margin: 0 auto;
   width: 664px;
+  height: 100%;
   padding: 24px;
-  scroll-snap-align: center;
   overflow: hidden scroll;
   font-family: "SF Mono", Menlo, Monaco, monospace;
   font-size: 12px;
-  &:first-child, &:not(:last-child){ border-right: solid thin #ddd }
 `;
 
 

@@ -6,7 +6,7 @@ import {RendererProps} from './Renderer';
 
 export default function MarkdownRenderer(p: RendererProps) {
   const content = React.useMemo(() => (
-    <Text source={p.data.toString()}/>
+    <Content source={p.data.toString()}/>
   ), [p.url, p.data]);
 
   return (
@@ -18,15 +18,13 @@ export default function MarkdownRenderer(p: RendererProps) {
 
 const Container = styled.div`
   user-select: text;
-  flex: 1 0 auto;
-  width: 664px;
+  margin: 0 auto;
+  height: 100%;
   padding: 24px;
-  scroll-snap-align: center;
   overflow: hidden scroll;
-  &:first-child, &:not(:last-child){ border-right: solid thin #ddd }
 `;
 
-const Text = styled(Markdown)`
+const Content = styled(Markdown)`
   width: 616px;
   margin: 0 auto;
 `;

@@ -26,16 +26,14 @@ export default function ImageRenderer(p: RendererProps) {
 const Container = styled(Horizontal)<{
   zoomed: boolean,
 }>`
-  flex: 1 0 auto;
+  height: 100%;
   align-items: center;
   justify-content: center;
   width: ${p => p.zoomed ? 'auto' : '664px'};
   min-width: 664px;
   max-width: 1200px;
   padding: 24px;
-  scroll-snap-align: center;
   overflow: auto scroll;
-  &:first-child, &:not(:last-child){ border-right: solid thin #ddd }
 `;
 
 const Image = styled.img<{

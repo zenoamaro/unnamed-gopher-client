@@ -15,10 +15,9 @@ export default function HTMLRenderer(p: RendererProps) {
 }
 
 const Frame = styled.iframe`
-  scroll-snap-align: center;
+  margin: 0 auto;
   overflow: hidden scroll;
-  flex: 1 0 auto;
+  height: 100%;
   width: 664px;
   border: none;
-  &:first-child, &:not(:last-child){ border-right: solid thin #ddd }
 `;

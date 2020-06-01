@@ -70,12 +70,9 @@ export default function HistoryView(p: {
         else if (mode === 'tab') createTab('main', url, true);
         else if (mode === 'backgroundTab') createTab('main', url, false);
       }
-      return <PageView
-        key={page.id}
-        tabId={tab.id}
-        pageId={page.id}
-        visitUrl={visitUrl}
-      />
+      return <Pane key={page.id}>
+        <PageView tabId={tab.id} pageId={page.id} visitUrl={visitUrl}/>
+      </Pane>;
     })
   ), [tab.history]);
 
@@ -90,4 +87,11 @@ const Container = styled(Horizontal)`
   flex: 1;
   overflow: scroll hidden;
   scroll-snap-type: x mandatory;
+`;
+
+const Pane = styled.div`
+  flex: 1 0 auto;
+  scroll-snap-align: center;
+  overflow: hidden;
+  &:first-child, &:not(:last-child){ border-right: solid thin #ddd }
 `;
