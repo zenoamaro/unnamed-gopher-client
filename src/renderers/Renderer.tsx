@@ -1,6 +1,5 @@
 import React from 'react';
 
-
 export type Renderer = (props: RendererProps) => React.ReactElement;
 
 export interface RendererProps {
