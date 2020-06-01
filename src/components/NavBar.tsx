@@ -11,6 +11,7 @@ import {
   IoIosSettings,
   IoIosRefresh,
 } from 'react-icons/io'
+import useShortcuts from 'utils/useShortcuts';
 
 export default function NavBar(p: {
   url?: string,
@@ -49,6 +50,14 @@ export default function NavBar(p: {
       $address.current?.blur();
     }
   }, [p.onNavigate]);
+
+  useShortcuts(React.useCallback((e: KeyboardEvent) => {
+    if (e.metaKey && e.key === 'l') {
+      $address.current?.focus();
+      $address.current?.select();
+    }
+    else return true;
+  }, []));
 
   return <Container>
     <ToolbarButton disabled={!p.canNavigateBack} onClick={p.onNavigateBack}>
