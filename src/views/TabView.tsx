@@ -16,30 +16,25 @@ import {
 
 
 export default function TabView(p: {
-  tabId: string,
+  tab: Tab,
 }) {
-  const {tabId} = p;
-  const tab = useCursor<Tab>(['tabs', tabId]);
-
+  const {tab} = p;
   const page = tab.history[tab.historyIndex];
-  const canRefresh = tab.history.length > 0;
-  const canNavigateBack = tab.historyIndex > 0;
-  const canNavigateForward = tab.historyIndex < tab.history.length -1;
 
   const refreshThisTab = React.useCallback(() => {
-    refreshTab(tab.id);
+    if (tab) refreshTab(tab.id);
   }, [tab.id]);
 
   const navigateThisTab = React.useCallback((url: string, at?: number) => {
-    navigateTab(tab.id, url, at);
+    if (tab) navigateTab(tab.id, url, at);
   }, [tab.id]);
 
   const navigateThisTabBack = React.useCallback(() => {
-    navigateTabBack(tab.id);
+    if (tab) navigateTabBack(tab.id);
   }, [tab.id]);
 
   const navigateThisTabForward = React.useCallback(() => {
-    navigateTabForward(tab.id);
+    if (tab) navigateTabForward(tab.id);
   }, [tab.id]);
 
   const openSettings = React.useCallback(() => {}, []);
@@ -50,6 +45,10 @@ export default function TabView(p: {
     else if (e.metaKey && e.key === 'ArrowRight') navigateThisTabForward();
     else return true;
   }, [refreshThisTab]));
+
+  const canRefresh = tab.history.length > 0;
+  const canNavigateBack = tab.historyIndex > 0;
+  const canNavigateForward = tab.historyIndex < tab.history.length -1;
 
   return <Container>
     <NavBar
@@ -64,7 +63,7 @@ export default function TabView(p: {
       onOpenSettings={openSettings}
     />
 
-    <HistoryView tabId={tab.id} onVisit={navigateThisTab}/>
+    <HistoryView tab={tab} onVisit={navigateThisTab}/>
   </Container>;
 }
 

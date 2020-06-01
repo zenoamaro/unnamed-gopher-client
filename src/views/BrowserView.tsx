@@ -1,11 +1,9 @@
 import {ipcRenderer} from 'electron';
 import React from 'react';
 import styled from 'styled-components';
-import * as Gopher from 'gopher';
 import {Vertical} from 'components/Layout';
 import TabBar from 'components/TabBar';
 import useShortcuts from 'utils/useShortcuts';
-import {capitalized} from 'utils/text';
 import TabView from './TabView';
 
 import {
@@ -24,7 +22,7 @@ export default function BrowserView() {
 
   const window = state.windows.main;
   const tabs = window.tabs.map(tabId => state.tabs[tabId]);
-  if (!tabs.length) createTab(window.id, 'gopher://start');
+  if (!tabs.length) createTab(window.id, 'gopher://start', true, true);
 
   const tab = state.tabs[window.selectedTabId];
 
@@ -93,7 +91,7 @@ export default function BrowserView() {
       createTab={createWindowTab}
       closeTab={destroyTab}
     />
-    {tab? <TabView tabId={tab.id}/> : null}
+    {tab? <TabView tab={tab}/> : null}
   </Container>
 }
 

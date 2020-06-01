@@ -69,8 +69,9 @@ export function navigatePage(tabId: string, pageId: string, url: string, query?:
 
   if (changedUrl) {
     // TODO Figure out how to have search
-    if (parsedUrl.type === '7') return;
-    createRecent(title, parsedUrl.type || '1', url, query);
+    if (parsedUrl.type !== '7') {
+      createRecent(title, parsedUrl.type || '1', url, query);
+    }
   }
 
   fetchResource([url, query].filter(Boolean).join('\t'), fresh);

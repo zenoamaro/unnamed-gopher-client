@@ -13,7 +13,7 @@ import {
 } from 'react-icons/io'
 
 export default function NavBar(p: {
-  url: string,
+  url?: string,
   onNavigate(url: string): void,
   onRefresh(): void,
   canRefresh: boolean,

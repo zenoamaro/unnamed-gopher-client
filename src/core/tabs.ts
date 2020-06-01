@@ -17,7 +17,7 @@ export function makeTab(url?: string) {
   };
 }
 
-export function createTab(windowId: string, url?: string, select: boolean = true) {
+export function createTab(windowId: string, url?: string, select = true, fresh = false) {
   const tab = makeTab(url);
   update((state) => {
     const window = state.windows.main;
@@ -25,7 +25,7 @@ export function createTab(windowId: string, url?: string, select: boolean = true
     window.tabs.push(tab.id);
     if (select) window.selectedTabId = tab.id;
   });
-  if (url) navigateTab(tab.id, url);
+  if (url) navigateTab(tab.id, url, undefined, fresh);
 }
 
 export function destroyTab(tabId: string) {

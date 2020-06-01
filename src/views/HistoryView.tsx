@@ -10,23 +10,22 @@ import PageView from './PageView';
 
 
 export default function HistoryView(p: {
-  tabId: string,
+  tab: Tab,
   onVisit(url: string, at: number): void,
 }) {
-  const {tabId, onVisit} = p;
-  const tab = useCursor<Tab>(['tabs', tabId]);
+  const {tab, onVisit} = p;
 
   const $scroller = React.useRef<HTMLDivElement>(null);
 
   React.useLayoutEffect(() => {
     if (!$scroller.current) return;
-    const $pane = $scroller.current.children[tab.historyIndex];
+    const $pane = $scroller.current.children[tab!.historyIndex];
     $pane?.scrollIntoView({behavior:'auto', inline:'center'});
   }, [tab.id])
 
   React.useLayoutEffect(() => {
     if (!$scroller.current) return;
-    const $pane = $scroller.current.children[tab.historyIndex];
+    const $pane = $scroller.current.children[tab!.historyIndex];
     $pane?.scrollIntoView({behavior:'smooth', inline:'center'});
   }, [$scroller.current, tab.historyIndex])
 
@@ -50,7 +49,7 @@ export default function HistoryView(p: {
       const end = Math.abs(width - left - $pane.offsetWidth);
       const centering = Math.abs(end - start);
       if (start <= 1 || end <= 1 || centering <= 1) {
-        if (i !== tab.historyIndex) navigateTabAt(tab.id, i);
+        if (i !== tab!.historyIndex) navigateTabAt(tab!.id, i);
         break;
       }
     }
@@ -69,7 +68,7 @@ export default function HistoryView(p: {
         else if (mode === 'backgroundTab') createTab('main', url, false);
       }
       return <Pane key={page.id}>
-        <PageView tabId={tab.id} pageId={page.id} visitUrl={visitUrl}/>
+        <PageView tab={tab} page={page} visitUrl={visitUrl}/>
       </Pane>;
     })
   ), [tab.history]);

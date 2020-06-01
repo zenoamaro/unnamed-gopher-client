@@ -28,9 +28,9 @@ const ICON_MAP: Bag<React.FC<{size: number}>> = {
 };
 
 export default function GopherRenderer(p: RendererProps) {
-  const parsed = React.useMemo(() => {
-    return Gopher.parse(p.data.toString());
-  }, [p.data]);
+  const parsed = React.useMemo(() => (
+    Gopher.parse(p.data.toString())
+  ), [p.data]);
 
   const $scroller = useScrollRestoration(p.scroll, p.onScroll);
 
