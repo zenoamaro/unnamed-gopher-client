@@ -1,8 +1,5 @@
-import {URL} from 'url';
 import {uniqueId} from 'lodash';
-import * as Gopher from 'gopher';
-import {update, withState} from './state';
-import {fetchResource} from './resources';
+import {update} from './state';
 
 export interface Bookmark {
   id: string,

@@ -77,7 +77,10 @@ export function requestStartPage() {
   });
 
   const data = [
-    `iWelcome to your start page!\t\t\t`,
+    `iSearch with your default search engine\t\t\t`,
+    `7Search\t/v2/vs\tgopher.floodgap.com\t70`,
+    `i\t\t\t`,
+    `iYour bookmarks\t\t\t`,
     ...items,
   ].join('\n');
 
