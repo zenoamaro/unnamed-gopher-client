@@ -32,9 +32,11 @@ export function destroyTab(tabId: string) {
   update((state) => {
     delete state.tabs[tabId];
     const window = state.windows.main;
-    window.tabs = window.tabs.filter(id => id !== tabId);
+    const index = window.tabs.findIndex(t => t === tabId);
+    window.tabs = window.tabs.filter(t => t !== tabId);
     if (window.selectedTabId === tabId) {
-      window.selectedTabId = window.tabs[window.tabs.length-1];
+      const newIndex = Math.min(index, window.tabs.length-1);
+      window.selectedTabId = window.tabs[newIndex];
     }
   });
 }
