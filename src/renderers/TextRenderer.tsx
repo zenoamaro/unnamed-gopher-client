@@ -1,9 +1,9 @@
 import Path from 'path';
 import React from 'react';
 import styled from 'styled-components';
-import Markdown from 'react-markdown';
 import * as Gopher from 'gopher';
 import {RendererProps} from './Renderer';
+import MarkdownRenderer from 'renderers/MarkdownRenderer';
 
 
 export default function TextRenderer(p: RendererProps) {
@@ -11,19 +11,12 @@ export default function TextRenderer(p: RendererProps) {
     const {pathname} = Gopher.parseGopherUrl(p.url);
     const basename = Path.basename(pathname);
     const ext = Path.extname(basename);
-    const str = p.data.toString();
 
-    return (
-      ext === '.md'? <Markdown source={str}/> :
-      <Text>{str}</Text>
-    );
+    if (ext === '.md') return <MarkdownRenderer {...p}/>;
+    return <Container><Text>{p.data.toString()}</Text></Container>;
   }, [p.url, p.data]);
 
-  return (
-    <Container>
-      {content}
-    </Container>
-  );
+  return content;
 }
 
 const Container = styled.div`
