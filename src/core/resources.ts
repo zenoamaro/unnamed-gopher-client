@@ -10,15 +10,6 @@ export interface Resource {
   timestamp: number,
 }
 
-const START_PAGE = (`
-iWelcome to your start page!\t\t\t
-i1234567890123456789012345678901234567890123456789012345678901234567890
-1Bitreich\t\tbitreich.org\t70
-1Floodgap\t\tgopher.floodgap.com\t70
-1SDF\t\tsdf.org\t70
-1Quux\t\tquux.org\t70
-`).trim();
-
 export function makeResource(url: string, data?: Buffer): Resource {
   return {
     url,
@@ -48,7 +39,7 @@ export function fetchResource(url: string, fresh = false) {
   const parsedUrl = Gopher.parseGopherUrl(url);
 
   const request = (
-    parsedUrl.hostname === 'start' ? createReadStream(START_PAGE) :
+    parsedUrl.hostname === 'start' ? requestStartPage() :
     Gopher.request(url)
   );
 
@@ -75,4 +66,20 @@ export function fetchResource(url: string, fresh = false) {
       resource.state = 'error';
     });
   });
+}
+
+export function requestStartPage() {
+  const items = withState((state) => {
+    return Object.values(state.bookmarks).map((b) => {
+      const url = Gopher.parseGopherUrl(b.url);
+      return `${b.type}${b.title}\t${url.path}\t${url.hostname}\t${url.port}`;
+    });
+  });
+
+  const data = [
+    `iWelcome to your start page!\t\t\t`,
+    ...items,
+  ].join('\n');
+
+  return createReadStream(data);
 }

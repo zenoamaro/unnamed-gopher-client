@@ -2,7 +2,9 @@ import React from 'react';
 import produce from 'immer';
 import {get} from 'lodash';
 import Bag from 'utils/Bag';
+import {fromPairs} from 'lodash';
 
+import {Bookmark, makeBookmark} from './bookmarks';
 import {Tab} from './tabs';
 import {Window, makeWindow} from './windows';
 import {Resource} from 'core/resources';
@@ -20,9 +22,17 @@ export interface State {
   windows: Bag<Window>,
   tabs: Bag<Tab>,
   resources: Bag<Resource>,
+  bookmarks: Bag<Bookmark>,
 }
 
 const initialWindow = makeWindow([]);
+
+const initialBookmarks = fromPairs([
+  makeBookmark('Bitreich', '1', 'gopher://bitreich.org'),
+  makeBookmark('Floodgap', '1', 'gopher://gopher.floodgap.com'),
+  makeBookmark('SDF', '1', 'gopher://sdf.org'),
+  makeBookmark('Quux', '1', 'gopher://quux.org'),
+].map(bookmark => [bookmark.id, bookmark]));
 
 let state: State = {
   windows: {
@@ -30,6 +40,7 @@ let state: State = {
   },
   tabs: {},
   resources: {},
+  bookmarks: initialBookmarks,
 };
 
 let cursors: Cursor<any>[] = [];
