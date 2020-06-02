@@ -10,7 +10,7 @@ export default function PageView(p: {
 }) {
   const {tab, page, visitUrl} = p;
   const selector = [page.url, page.query].filter(Boolean).join('\t');
-  const data = useCursor<Resource['data']>(['resources', selector, 'data']);
+  const resource = useCursor<Resource>(['resources', selector]);
 
   const setScroll = React.useCallback((scroll: number) => {
     if (tab && page) scrollPage(tab.id, page.id, scroll);
@@ -22,7 +22,8 @@ export default function PageView(p: {
     <DetectRenderer
       type={page.type}
       url={page.url}
-      data={data}
+      state={resource.state}
+      data={resource.data}
       scroll={page.scroll}
       onScroll={setScroll}
       visitUrl={visitUrl}

@@ -6,6 +6,8 @@ import GopherRenderer from './GopherRenderer';
 import TextRenderer from './TextRenderer';
 import ImageRenderer from './ImageRenderer';
 import HTMLRenderer from './HTMLRenderer';
+import BinaryRenderer from './BinaryRenderer';
+import AudioRenderer from './AudioRenderer';
 
 export const renderers: Bag<Renderer> = {
   '0': TextRenderer,
@@ -16,6 +18,11 @@ export const renderers: Bag<Renderer> = {
   'p': ImageRenderer,
   'g': ImageRenderer,
   'j': ImageRenderer,
+  '4': BinaryRenderer,
+  '5': BinaryRenderer,
+  '6': BinaryRenderer,
+  '9': BinaryRenderer,
+  's': AudioRenderer,
   'default': TextRenderer,
 }
 

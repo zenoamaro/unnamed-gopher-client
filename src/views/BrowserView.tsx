@@ -74,8 +74,10 @@ export default function BrowserView() {
       resource?.state === 'error' ? 'IoIosCloseCircleOutline' :
       page.type === '1' ? 'IoIosFolderOpen' :
       page.type === '7' ? 'IoIosSearch' :
-      page.type === '0' ? 'IoIosDocument' :
+      '0d'.includes(page.type) ? 'IoIosDocument' :
+      '4569'.includes(page.type) ? 'IoIosArchive' :
       'Ipgj'.includes(page.type) ? 'IoIosImage' :
+      's'.includes(page.type) ? 'IoIosSpeaker' :
       'IoIosCloseCircleOutline'
     );
 
