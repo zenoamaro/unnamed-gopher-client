@@ -10,4 +10,4 @@ import './assets/app.css';
 ReactDOM.render(
   <App/>,
   document.getElementById('app'),
-)
+);

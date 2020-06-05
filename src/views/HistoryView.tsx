@@ -3,10 +3,11 @@ import React from 'react';
 import styled from 'styled-components';
 import {useDebouncedCallback} from 'use-debounce';
 
-import {Tab, navigateTabAt, useCursor, createTab} from 'core';
+import {Tab} from 'core';
 import {VisitUrlOptions} from 'renderers/Renderer';
 import {Horizontal} from 'components/Layout';
 import PageView from './PageView';
+import {remoteAction} from 'utils/remoteState';
 
 
 export default function HistoryView(p: {
@@ -49,7 +50,7 @@ export default function HistoryView(p: {
       const end = Math.abs(width - left - $pane.offsetWidth);
       const centering = Math.abs(end - start);
       if (start <= 1 || end <= 1 || centering <= 1) {
-        if (i !== tab!.historyIndex) navigateTabAt(tab!.id, i);
+        if (i !== tab!.historyIndex) remoteAction('navigateTabAt', tab!.id, i);
         break;
       }
     }
@@ -64,8 +65,8 @@ export default function HistoryView(p: {
         const {mode} = options;
         if (mode === 'push') onVisit(url, i+1);
         else if (mode === 'replace') onVisit(url, i);
-        else if (mode === 'tab') createTab('main', url, true);
-        else if (mode === 'backgroundTab') createTab('main', url, false);
+        else if (mode === 'tab') remoteAction('createTab', 'main', url, true);
+        else if (mode === 'backgroundTab') remoteAction('createTab', 'main', url, false);
       }
       return <Pane key={page.id}>
         <PageView tab={tab} page={page} visitUrl={visitUrl}/>

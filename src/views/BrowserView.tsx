@@ -1,55 +1,52 @@
 import {ipcRenderer} from 'electron';
 import React from 'react';
 import styled from 'styled-components';
+import {State} from 'core';
 import {Vertical} from 'components/Layout';
 import TabBar from 'components/TabBar';
 import useShortcuts from 'utils/useShortcuts';
+import {remoteAction, withRemoteState} from 'utils/remoteState';
 import TabView from './TabView';
 
-import {
-  State,
-  selectTab,
-  createTab,
-  destroyTab,
-  reorderTab,
-  useCursor,
-  selectPreviousTab,
-  selectNextTab,
-} from 'core';
 
-export default function BrowserView() {
-  const state = useCursor<State>();
-
+export default withRemoteState(function BrowserView(p: {
+  state: State,
+}) {
+  const {state} = p;
   const window = state.windows.main;
   const tabs = window.tabs.map(tabId => state.tabs[tabId]);
-  if (!tabs.length) createTab(window.id, 'gopher://start', true, true);
+  if (!tabs.length) remoteAction('createTab', window.id, 'gopher://start', true, true);
 
   const tab = state.tabs[window.selectedTabId];
 
   const reorderWindowTab = React.useCallback(({oldIndex, newIndex}) => {
     const tabId = window.tabs[oldIndex];
-    reorderTab(window.id, tabId, newIndex);
+    remoteAction('reorderTab', window.id, tabId, newIndex);
   }, [window.id, window.tabs]);
 
   const selectWindowTab = React.useCallback((tabId: string) => {
-    selectTab(window.id, tabId);
+    remoteAction('selectTab', window.id, tabId);
   }, [window.id]);
 
-  const createWindowTab = React.useCallback(() => {
-    createTab(window.id);
+  const createWindowTab = React.useCallback((url?: string, select?: boolean) => {
+    remoteAction('createTab', window.id, url, select);
   }, [window.id]);
+
+  const destroyTab = React.useCallback((tabId: string) => {
+    remoteAction('destroyTab', tabId);
+  }, []);
 
   React.useEffect(() => {
     ipcRenderer.on('deep-link', function (e, url) {
-      createTab('main', url);
+      remoteAction('createTab', 'main', url);
     });
   }, []);
 
   useShortcuts(React.useCallback((e: KeyboardEvent) => {
-    if (e.metaKey && e.key === 't') createTab(window.id);
-    else if (e.metaKey && e.key === 'w') destroyTab(window.selectedTabId);
-    else if (e.metaKey && e.key === '[') selectPreviousTab(window.id);
-    else if (e.metaKey && e.key === ']') selectNextTab(window.id);
+    if (e.metaKey && e.key === 't') remoteAction('createTab', window.id);
+    else if (e.metaKey && e.key === 'w') remoteAction('destroyTab', window.selectedTabId);
+    else if (e.metaKey && e.key === '[') remoteAction('selectPreviousTab', window.id);
+    else if (e.metaKey && e.key === ']') remoteAction('selectNextTab', window.id);
     else return true;
   }, [window.id, window.selectedTabId]));
 
@@ -92,9 +89,9 @@ export default function BrowserView() {
       createTab={createWindowTab}
       closeTab={destroyTab}
     />
-    {tab? <TabView tab={tab}/> : null}
+    {tab? <TabView tab={tab} createTab={createWindowTab}/> : null}
   </Container>
-}
+});
 
 const Container = styled(Vertical)`
   flex: 1;

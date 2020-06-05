@@ -1,6 +1,4 @@
-import React from 'react';
 import produce from 'immer';
-import {get} from 'lodash';
 import Bag from 'utils/Bag';
 import {fromPairs} from 'lodash';
 
@@ -9,14 +7,8 @@ import {Tab} from './tabs';
 import {Window, makeWindow} from './windows';
 import {Recent} from 'core/recents';
 
-export interface Cursor<T> {
-  path: string[],
-  setter: (state: T) => void,
-  value: T,
-}
 
-export type Getter<T> = (state: State) => T;
-export type Updater = (state: State) => void;
+// State ———————————————————————————————————————————————————————————————————————
 
 export interface State {
   windows: Bag<Window>,
@@ -43,7 +35,12 @@ let state: State = {
   recents: {},
 };
 
-let cursors: Cursor<any>[] = [];
+
+// Updates —————————————————————————————————————————————————————————————————————
+
+export type Getter<T> = (state: State) => T;
+export type Updater = (state: State) => void;
+
 let nextUpdate: number | null;
 
 export function withState<T>(fn: Getter<T>): T {
@@ -53,27 +50,23 @@ export function withState<T>(fn: Getter<T>): T {
 export function update(fn: Updater): void {
   state = produce(state, fn);
 
-  if (!nextUpdate) nextUpdate = requestAnimationFrame(() => {
+  if (!nextUpdate) nextUpdate = setTimeout(() => {
     nextUpdate = null;
-    for (let cur of cursors) updateCursor(cur);
-  });
+    for (let fn of listeners) fn(state);
+  }, 16);
 }
 
-export function updateCursor<T>(cur: Cursor<T>) {
-  const newValue = cur.path.length? get(state, cur.path) : state;
-  if (newValue !== cur.value) cur.setter(newValue);
+
+// Listeners ———————————————————————————————————————————————————————————————————
+
+export type Subscriber = (state: State) => void;
+
+let listeners: Subscriber[] = [];
+
+export function subscribe(fn: Subscriber) {
+  listeners.push(fn);
 }
 
-export function useCursor<T>(path: string[] = []): T {
-  const initialValue = path.length ? get(state, path) : state;
-  const [value, setter] = React.useState<T>(initialValue);
-  const cursor = {path, setter, value};
-
-  React.useEffect(() => {
-    cursors.push(cursor);
-    updateCursor(cursor); // Catch updates that happened before useEffect
-    return () => {cursors = cursors.filter(c => c.setter !== setter)};
-  }, [ JSON.stringify(path) ]);
-
-  return value;
+export function unsubscribe(fn: Subscriber) {
+  listeners = listeners.filter(l => l !== fn);
 }

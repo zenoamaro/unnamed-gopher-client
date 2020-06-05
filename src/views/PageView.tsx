@@ -1,5 +1,6 @@
 import React from 'react';
-import {Tab, scrollPage, Page} from 'core';
+import {Tab, Page} from 'core';
+import {remoteAction} from 'utils/remoteState';
 import {DetectRenderer} from 'renderers'
 import {VisitUrlOptions} from 'renderers/Renderer';
 
@@ -11,7 +12,7 @@ export default function PageView(p: {
   const {tab, page, visitUrl} = p;
 
   const setScroll = React.useCallback((scroll: number) => {
-    if (tab && page) scrollPage(tab.id, page.id, scroll);
+    if (tab && page) remoteAction('scrollPage', tab.id, page.id, scroll);
   }, [tab.id, page.id]);
 
   if (!tab || !page) return null;

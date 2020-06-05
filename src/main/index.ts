@@ -1,8 +1,8 @@
 import 'v8-compile-cache';
-import {app, protocol, BrowserWindow} from 'electron';
+import {app, protocol, BrowserWindow, ipcMain} from 'electron';
 import installExtension, {REACT_DEVELOPER_TOOLS} from 'electron-devtools-installer';
 import {gopherProtocolScheme, gopherProtocolHandler} from 'protocols/gopher';
-
+import * as Core from 'core';
 
 let win: BrowserWindow;
 
@@ -14,6 +14,21 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: true,
     },
+  });
+
+  Core.subscribe((state) => {
+    win.webContents.send('state', state);
+  });
+
+  ipcMain.on('state', (event) => {
+    Core.withState((state) => {
+      event.sender.send('state', state);
+    });
+  });
+
+  ipcMain.on('action', async (event, action: keyof typeof Core, ...args: any[]) => {
+    // @ts-ignore
+    await Core[action](...args);
   });
 
   win.loadFile(`build/app.html`);
