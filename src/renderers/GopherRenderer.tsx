@@ -46,7 +46,6 @@ export default function GopherRenderer(p: RendererProps) {
 }
 
 const Container = styled.div`
-  margin: 0 auto;
   min-width: 664px;
   height: 100%;
   padding: 24px;

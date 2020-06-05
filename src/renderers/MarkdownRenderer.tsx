@@ -24,7 +24,6 @@ export default function MarkdownRenderer(p: RendererProps) {
 
 const Container = styled.div`
   user-select: text;
-  margin: 0 auto;
   min-width: 664px;
   height: 100%;
   padding: 24px;

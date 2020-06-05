@@ -30,7 +30,6 @@ export default function TextRenderer(p: RendererProps) {
 
 const Container = styled.div`
   user-select: text;
-  margin: 0 auto;
   min-width: 664px;
   height: 100%;
   padding: 24px;
