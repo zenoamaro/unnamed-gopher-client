@@ -19,7 +19,7 @@
     "start": "electron .",
     "build": "webpack --mode production",
     "watch": "webpack-dev-server --watch --mode development",
-    "dist": "electron-builder build",
+    "dist": "npm run clean && npm run build && electron-builder build",
     "clean": "rm -rf build dist",
     "prepublishOnly": "npm run clean && npm run build && npm run test"
   },
@@ -36,7 +36,8 @@
     "readable-stream-clone": "0.0.7",
     "styled-components": "^5.1.1",
     "through2": "^3.0.1",
-    "use-debounce": "^3.4.2"
+    "use-debounce": "^3.4.2",
+    "v8-compile-cache": "^2.1.1"
   },
   "devDependencies": {
     "@types/electron-devtools-installer": "^2.2.0",

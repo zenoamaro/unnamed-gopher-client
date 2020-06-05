@@ -1,6 +1,8 @@
+import 'v8-compile-cache';
 import {app, protocol, BrowserWindow} from 'electron';
 import installExtension, {REACT_DEVELOPER_TOOLS} from 'electron-devtools-installer';
 import {gopherProtocolScheme, gopherProtocolHandler} from 'protocols/gopher';
+
 
 let win: BrowserWindow;
 
