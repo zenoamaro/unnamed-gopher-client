@@ -20,6 +20,10 @@ export default function TabBar(p: {
   closeTab(tabId: string): void,
   reorderTab(p: any): void,
 }) {
+  const createTab = React.useCallback(() => {
+    p.createTab();
+  }, [p.createTab]);
+
   return <Container>
     <SortableTabs
       {...p}
@@ -30,7 +34,7 @@ export default function TabBar(p: {
       distance={5}
     />
 
-    <ToolbarButton onClick={p.createTab}>
+    <ToolbarButton onClick={createTab}>
       <Icons.IoIosAdd size={22}/>
     </ToolbarButton>
   </Container>;
