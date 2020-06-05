@@ -11,7 +11,7 @@ import MarkdownRenderer from './MarkdownRenderer';
 export default function TextRenderer(p: RendererProps) {
   // FIXME Markdown causes double fetch
   const [text] = useFetchText(p.url);
-  const $scroller = useScrollRestoration(p.scroll, p.onScroll);
+  const $scroller = useScrollRestoration(p.scroll, p.onScroll, [text]);
 
   const content = React.useMemo(() => {
     const {pathname} = Gopher.parseGopherUrl(p.url);

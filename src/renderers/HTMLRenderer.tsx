@@ -9,7 +9,7 @@ export default function HTMLRenderer(p: RendererProps) {
   // FIXME Find out why `src` makes iframe crash
   //       on gopher://sdf.org/h/sdf/classes/CTN160_WINTER_2010_SSCC.html
   const [text] = useFetchText(p.url);
-  const $scroller = useScrollRestoration<HTMLIFrameElement>(p.scroll, p.onScroll);
+  const $scroller = useScrollRestoration<HTMLIFrameElement>(p.scroll, p.onScroll, [text]);
 
   return (
     <Frame srcDoc={text} sandbox="" ref={$scroller}/>

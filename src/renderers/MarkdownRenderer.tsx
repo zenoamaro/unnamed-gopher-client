@@ -13,7 +13,7 @@ export default function MarkdownRenderer(p: RendererProps) {
     <Content source={text}/>
   ), [text]);
 
-  const $scroller = useScrollRestoration(p.scroll, p.onScroll);
+  const $scroller = useScrollRestoration(p.scroll, p.onScroll, [markdown]);
 
   return (
     <Container ref={$scroller}>

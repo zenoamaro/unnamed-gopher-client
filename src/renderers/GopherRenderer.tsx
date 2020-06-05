@@ -34,7 +34,7 @@ export default function GopherRenderer(p: RendererProps) {
     return Gopher.parse(content);
   }, [content]);
 
-  const $scroller = useScrollRestoration(p.scroll, p.onScroll);
+  const $scroller = useScrollRestoration(p.scroll, p.onScroll, [items]);
 
   return (
     <Container ref={$scroller}>
