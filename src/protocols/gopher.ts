@@ -5,6 +5,7 @@ import {app} from 'electron';
 import intoStream from 'into-stream';
 import ReadableStreamClone from 'readable-stream-clone'
 import * as Gopher from 'gopher';
+import {withState} from 'core';
 
 
 const CACHE_DIR = Path.join(
@@ -30,7 +31,7 @@ export async function gopherProtocolHandler(
   const maxAge = getMaxCacheAge(request);
 
   if (url.startsWith('gopher://start')) {
-    return callback(streamResponse(intoStream('iTest')));
+    return callback(streamResponse(requestStartPage()));
   } else if (!await shouldRequestFresh(filename, maxAge)) {
     callback(streamResponse(FS.createReadStream(filename)));
   } else {
@@ -86,32 +87,32 @@ export async function shouldRequestFresh(filename: string, maxAge: number) {
   }
 }
 
-// export function requestStartPage() {
-//   const bookmarks = withState((state) => {
-//     return Object.values(state.bookmarks).map((b) => {
-//       const url = Gopher.parseGopherUrl(b.url);
-//       return `${b.type}${b.title}\t${url.path}\t${url.hostname}\t${url.port}`;
-//     });
-//   });
+export function requestStartPage() {
+  const bookmarks = withState((state) => {
+    return Object.values(state.bookmarks).map((b) => {
+      const url = Gopher.parseGopherUrl(b.url);
+      return `${b.type}${b.title}\t${url.path}\t${url.hostname}\t${url.port}`;
+    });
+  });
 
-//   const recents = withState((state) => {
-//     return Object.values(state.recents)
-//       .sort((a, b) => b.timestamp - a.timestamp)
-//       .map((b) => {
-//         const url = Gopher.parseGopherUrl(b.url);
-//         return `${b.type}${b.title}\t${url.path}\t${url.hostname}\t${url.port}`;
-//       });
-//   });
+  const recents = withState((state) => {
+    return Object.values(state.recents)
+      .sort((a, b) => b.timestamp - a.timestamp)
+      .map((b) => {
+        const url = Gopher.parseGopherUrl(b.url);
+        return `${b.type}${b.title}\t${url.path}\t${url.hostname}\t${url.port}`;
+      });
+  });
 
-//   const data = [
-//     `iSearch with your default search engine\t\t\t`,
-//     `7Search\t/v2/vs\tgopher.floodgap.com\t70`,
-//     `i\t\t\t`,
-//     `iYour bookmarks\t\t\t`,
-//     ...bookmarks,
-//     `iRecently visited\t\t\t`,
-//     ...recents,
-//   ].join('\n');
+  const data = [
+    `iSearch with your default search engine\t\t\t`,
+    `7Search\t/v2/vs\tgopher.floodgap.com\t70`,
+    `i\t\t\t`,
+    `iYour bookmarks\t\t\t`,
+    ...bookmarks,
+    `iRecently visited\t\t\t`,
+    ...recents,
+  ].join('\n');
 
-//   return createReadStream(data);
-// }
+  return intoStream(data);
+}
