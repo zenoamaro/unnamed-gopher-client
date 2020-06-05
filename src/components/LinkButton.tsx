@@ -1,9 +1,7 @@
-import React from 'react';
-import styled, {css} from 'styled-components';
-import {Vertical, Horizontal, Spring} from './Layout';
+import styled from 'styled-components';
 
 export default styled.a<{
-  disabled: boolean,
+  disabled?: boolean,
 }>`
   appearance: none;
   font-family: inherit;

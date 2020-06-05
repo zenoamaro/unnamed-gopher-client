@@ -66,12 +66,11 @@ export default function BrowserView() {
       return {id, icon:'IoIosStar', title:'Start page'}
     }
 
-    const selector = [page.url, page.query].filter(Boolean).join('\t');
-    const resource = state.resources[selector];
+    // const selector = [page.url, page.query].filter(Boolean).join('\t');
 
     const icon = (
-      resource?.state === 'loading' ? 'LoadingIcon' :
-      resource?.state === 'error' ? 'IoIosCloseCircleOutline' :
+      // resource?.state === 'loading' ? 'LoadingIcon' :
+      // resource?.state === 'error' ? 'IoIosCloseCircleOutline' :
       page.type === '1' ? 'IoIosFolderOpen' :
       page.type === '7' ? 'IoIosSearch' :
       '0d'.includes(page.type) ? 'IoIosDocument' :
@@ -82,7 +81,7 @@ export default function BrowserView() {
     );
 
     return {id, icon, title: page.title};
-  }), [tabs, state.resources]);
+  }), [tabs]);
 
   return <Container>
     <TabBar

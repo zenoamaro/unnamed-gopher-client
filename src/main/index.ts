@@ -1,5 +1,6 @@
-import {app, BrowserWindow} from 'electron';
+import {app, protocol, BrowserWindow} from 'electron';
 import installExtension, {REACT_DEVELOPER_TOOLS} from 'electron-devtools-installer';
+import {gopherProtocolScheme, gopherProtocolHandler} from 'protocols/gopher';
 
 let win: BrowserWindow;
 
@@ -10,11 +11,15 @@ function createWindow() {
     titleBarStyle: 'hiddenInset',
     webPreferences: {
       nodeIntegration: true,
-    }
+    },
   });
 
   win.loadFile(`build/app.html`);
 }
+
+protocol.registerSchemesAsPrivileged([
+  gopherProtocolScheme,
+]);
 
 // FIXME MacOS-only
 // FIXME Needs to wait for app to be ready
@@ -24,4 +29,5 @@ app.on('open-url', (e, url) => {
 
 app.whenReady()
   .then(createWindow)
-  .then(() => installExtension(REACT_DEVELOPER_TOOLS));
+  .then(() => protocol.registerStreamProtocol(gopherProtocolScheme.scheme, gopherProtocolHandler))
+  .then(() => installExtension(REACT_DEVELOPER_TOOLS))

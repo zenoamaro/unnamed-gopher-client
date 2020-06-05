@@ -1,16 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import {RendererProps} from './Renderer';
 import {Horizontal} from 'components/Layout';
+import {RendererProps} from './Renderer';
 
 
 export default function ImageRenderer(p: RendererProps) {
   const [zoomed, setZoomed] = React.useState(false);
-
-  const url = React.useMemo(() => {
-    const blob = new Blob([p.data], {type:'text/html'});
-    return URL.createObjectURL(blob);
-  }, [p.data]);
 
   const toggleZoom = React.useCallback(() => {
     setZoomed(!zoomed);
@@ -18,7 +13,7 @@ export default function ImageRenderer(p: RendererProps) {
 
   return (
     <Container zoomed={zoomed}>
-      <Image src={url} zoomed={zoomed} onClick={toggleZoom}/>
+      <Image src={p.url} zoomed={zoomed} onClick={toggleZoom}/>
     </Container>
   );
 }

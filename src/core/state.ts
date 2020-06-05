@@ -7,7 +7,6 @@ import {fromPairs} from 'lodash';
 import {Bookmark, makeBookmark} from './bookmarks';
 import {Tab} from './tabs';
 import {Window, makeWindow} from './windows';
-import {Resource} from 'core/resources';
 import {Recent} from 'core/recents';
 
 export interface Cursor<T> {
@@ -22,7 +21,6 @@ export type Updater = (state: State) => void;
 export interface State {
   windows: Bag<Window>,
   tabs: Bag<Tab>,
-  resources: Bag<Resource>,
   bookmarks: Bag<Bookmark>,
   recents: Bag<Recent>,
 }
@@ -41,7 +39,6 @@ let state: State = {
     [initialWindow.id]: initialWindow,
   },
   tabs: {},
-  resources: {},
   bookmarks: initialBookmarks,
   recents: {},
 };

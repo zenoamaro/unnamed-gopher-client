@@ -3,7 +3,6 @@ import {uniqueId} from 'lodash';
 import * as Gopher from 'gopher';
 import {update, withState} from './state';
 import {createRecent} from './recents';
-import {fetchResource} from './resources';
 import {capitalized} from 'utils/text';
 
 export interface Page {
@@ -73,8 +72,6 @@ export function navigatePage(tabId: string, pageId: string, url: string, query?:
       createRecent(title, parsedUrl.type || '1', url, query);
     }
   }
-
-  fetchResource([url, query].filter(Boolean).join('\t'), fresh);
 }
 
 export function refreshPage(tabId: string, pageId: string) {

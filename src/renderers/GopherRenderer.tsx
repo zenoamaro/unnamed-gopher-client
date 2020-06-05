@@ -3,9 +3,9 @@ import * as Icons from 'react-icons/io';
 import styled from 'styled-components';
 import * as Gopher from 'gopher';
 import Bag from 'utils/Bag';
+import {useFetchText} from 'utils/useFetch';
 import {useScrollRestoration} from 'utils/useScrollRestoration';
 import {RendererProps} from './Renderer';
-
 
 
 const ICON_MAP: Bag<React.FC<{size: number}>> = {
@@ -28,15 +28,17 @@ const ICON_MAP: Bag<React.FC<{size: number}>> = {
 };
 
 export default function GopherRenderer(p: RendererProps) {
-  const parsed = React.useMemo(() => (
-    Gopher.parse(p.data.toString())
-  ), [p.data]);
+  const [content] = useFetchText(p.url);
+
+  const items = React.useMemo(() => {
+    return Gopher.parse(content);
+  }, [content]);
 
   const $scroller = useScrollRestoration(p.scroll, p.onScroll);
 
   return (
     <Container ref={$scroller}>
-      {parsed.map((item, i) => (
+      {items.map((item, i) => (
         <GopherItem key={i} item={item} visitUrl={p.visitUrl}/>
       ))}
     </Container>
@@ -45,7 +47,7 @@ export default function GopherRenderer(p: RendererProps) {
 
 const Container = styled.div`
   margin: 0 auto;
-  width: 664px;
+  min-width: 664px;
   height: 100%;
   padding: 24px;
   overflow: hidden scroll;

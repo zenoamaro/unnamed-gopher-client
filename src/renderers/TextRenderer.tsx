@@ -2,12 +2,15 @@ import Path from 'path';
 import React from 'react';
 import styled from 'styled-components';
 import * as Gopher from 'gopher';
+import {useFetchText} from 'utils/useFetch';
 import {useScrollRestoration} from 'utils/useScrollRestoration';
 import {RendererProps} from './Renderer';
-import MarkdownRenderer from 'renderers/MarkdownRenderer';
+import MarkdownRenderer from './MarkdownRenderer';
 
 
 export default function TextRenderer(p: RendererProps) {
+  // FIXME Markdown causes double fetch
+  const [text] = useFetchText(p.url);
   const $scroller = useScrollRestoration(p.scroll, p.onScroll);
 
   const content = React.useMemo(() => {
@@ -18,9 +21,9 @@ export default function TextRenderer(p: RendererProps) {
     if (ext === '.md') return <MarkdownRenderer {...p}/>;
 
     return <Container ref={$scroller}>
-      <Content>{p.data.toString()}</Content>
+      <Content>{text}</Content>
     </Container>;
-  }, [p.url, p.data]);
+  }, [p.url, text]);
 
   return content;
 }
@@ -28,6 +31,7 @@ export default function TextRenderer(p: RendererProps) {
 const Container = styled.div`
   user-select: text;
   margin: 0 auto;
+  min-width: 664px;
   height: 100%;
   padding: 24px;
   overflow: hidden scroll;
