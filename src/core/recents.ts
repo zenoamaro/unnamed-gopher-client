@@ -8,6 +8,9 @@ export interface Recent {
 }
 
 export function makeRecent(title: string, type: string, url: string): Recent {
+  // Convert searches into folders
+  if (type === '7') type = '1';
+
   return {
     title,
     url,

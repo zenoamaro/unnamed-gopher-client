@@ -59,10 +59,7 @@ export function navigatePage(tabId: string, pageId: string, url: string, fresh =
   });
 
   if (changedUrl) {
-    // TODO Figure out how to have search
-    if (parsedUrl.type !== '7') {
-      createRecent(title, parsedUrl.type || '1', url);
-    }
+    createRecent(title, parsedUrl.type || '1', url);
   }
 }
 

@@ -6,6 +6,8 @@ import intoStream from 'into-stream';
 import ReadableStreamClone from 'readable-stream-clone'
 import * as Gopher from 'gopher';
 import {withState} from 'core';
+import {Bookmark} from 'core/bookmarks';
+import {Recent} from 'core/recents';
 
 
 const CACHE_DIR = Path.join(
@@ -88,20 +90,20 @@ export async function shouldRequestFresh(filename: string, maxAge: number) {
 }
 
 export function requestStartPage() {
+  function renderItem(item: Bookmark | Recent) {
+    const {type, title, url} = item;
+    const {hostname, port, path, query} = Gopher.parseGopherUrl(url);
+    return `${type}${title}\t${path}${query?`%09${query}`:''}\t${hostname}\t${port}`;
+  }
+
   const bookmarks = withState((state) => {
-    return Object.values(state.bookmarks).map((b) => {
-      const url = Gopher.parseGopherUrl(b.url);
-      return `${b.type}${b.title}\t${url.path}\t${url.hostname}\t${url.port}`;
-    });
+    return Object.values(state.bookmarks).map(renderItem);
   });
 
   const recents = withState((state) => {
     return Object.values(state.recents)
       .sort((a, b) => b.timestamp - a.timestamp)
-      .map((b) => {
-        const url = Gopher.parseGopherUrl(b.url);
-        return `${b.type}${b.title}\t${url.path}\t${url.hostname}\t${url.port}`;
-      });
+      .map(renderItem);
   });
 
   const data = [
@@ -110,6 +112,7 @@ export function requestStartPage() {
     `i\t\t\t`,
     `iYour bookmarks\t\t\t`,
     ...bookmarks,
+    `i\t\t\t`,
     `iRecently visited\t\t\t`,
     ...recents,
   ].join('\n');
