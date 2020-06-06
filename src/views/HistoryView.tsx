@@ -58,6 +58,8 @@ export default function HistoryView(p: {
 
   const pages = React.useMemo(() => (
     tab.history.map((page, i) => {
+      const isCurrentPage = tab.history[tab.historyIndex].id === page.id;
+
       function visitUrl(url: string, options: VisitUrlOptions) {
         if (!url.startsWith('gopher://')) {
           return shell.openExternal(url);
@@ -68,7 +70,8 @@ export default function HistoryView(p: {
         else if (mode === 'tab') remoteAction('createTab', 'main', url, true);
         else if (mode === 'backgroundTab') remoteAction('createTab', 'main', url, false);
       }
-      return <Pane key={page.id}>
+
+      return <Pane key={page.id} highlight={isCurrentPage}>
         <PageView tab={tab} page={page} visitUrl={visitUrl}/>
       </Pane>;
     })
@@ -87,9 +90,12 @@ const Container = styled(Horizontal)`
   scroll-snap-type: x mandatory;
 `;
 
-const Pane = styled.div`
+const Pane = styled.div<{
+  highlight: boolean,
+}>`
   flex: 1 0 auto;
   scroll-snap-align: center;
   overflow: hidden;
+  background: ${p => p.highlight? 'white' : 'transparent'};
   &:first-child, &:not(:last-child){ border-right: solid thin #ddd }
 `;
