@@ -31,7 +31,17 @@ export default function GopherRenderer(p: RendererProps) {
   const [content] = useFetchText(p.url);
 
   const items = React.useMemo(() => {
-    return Gopher.parse(content);
+    let items = Gopher.parse(content);
+    // Collapse sequential texts together
+    return items.reduce((items: Gopher.Item[], item) => {
+      const lastItem = items[items.length -1];
+      if (item.type === 'i' && lastItem?.type === 'i') {
+        lastItem.label += `\n${item.label}`;
+      } else {
+        items.push(item);
+      }
+      return items;
+    }, []);
   }, [content]);
 
   const $scroller = useScrollRestoration(p.scroll, p.onScroll, [items]);
