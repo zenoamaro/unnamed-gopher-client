@@ -1,13 +1,10 @@
-import {shell} from 'electron';
 import React from 'react';
 import styled from 'styled-components';
+import {Tab, VisitMode} from 'core';
 import {useDebouncedCallback} from 'use-debounce';
-
-import {Tab} from 'core';
-import {VisitUrlOptions} from 'renderers/Renderer';
+import {remoteAction} from 'utils/remoteState';
 import {Horizontal} from 'components/Layout';
 import PageView from './PageView';
-import {remoteAction} from 'utils/remoteState';
 
 
 export default function HistoryView(p: {
@@ -62,18 +59,9 @@ export default function HistoryView(p: {
   const pages = React.useMemo(() => (
     tab.history.map((page, i) => {
       const isCurrentPage = tab.history[tab.historyIndex].id === page.id;
-
-      function visitUrl(url: string, options: VisitUrlOptions) {
-        if (!url.startsWith('gopher://')) {
-          return shell.openExternal(url);
-        }
-        const {mode} = options;
-        if (mode === 'push') onVisit(url, i+1);
-        else if (mode === 'replace') onVisit(url, i);
-        else if (mode === 'tab') remoteAction('createTab', 'main', url, true);
-        else if (mode === 'backgroundTab') remoteAction('createTab', 'main', url, false);
+      function visitUrl(url: string, mode?: VisitMode) {
+        remoteAction('visit', url, mode, i);
       }
-
       return <Pane key={page.id} highlight={isCurrentPage}>
         <PageView tab={tab} page={page} visitUrl={visitUrl}/>
       </Pane>;

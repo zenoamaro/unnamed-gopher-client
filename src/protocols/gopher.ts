@@ -20,6 +20,7 @@ FS.ensureDir(CACHE_DIR);
 export const gopherProtocolScheme = {
   scheme: 'gopher',
   privileges: {
+    standard: true,
     supportFetchAPI: true,
   },
 };
@@ -34,6 +35,8 @@ export async function gopherProtocolHandler(
 
   if (url.startsWith('gopher://start')) {
     return callback(streamResponse(requestStartPage()));
+  } else if (url.startsWith('gopher://test')) {
+    return callback(streamResponse(requestTestPage(url)));
   } else if (!await shouldRequestFresh(filename, maxAge)) {
     callback(streamResponse(FS.createReadStream(filename)));
   } else {
@@ -87,6 +90,12 @@ export async function shouldRequestFresh(filename: string, maxAge: number) {
     if (err.code == 'ENOENT') return true;
     else throw err;
   }
+}
+
+export function requestTestPage(url: string) {
+  return intoStream([
+    `[Link](gopher://bitreich.org)`,
+  ].join('\n'));
 }
 
 export function requestStartPage() {

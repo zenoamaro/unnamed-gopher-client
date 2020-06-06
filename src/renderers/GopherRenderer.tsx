@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import * as Gopher from 'gopher';
 import Bag from 'utils/Bag';
 import {useFetchText} from 'utils/useFetch';
+import visitModeFromEvent from 'utils/visitModeFromEvent';
 import {useScrollRestoration} from 'utils/useScrollRestoration';
 import {RendererProps} from './Renderer';
 
@@ -49,7 +50,7 @@ export default function GopherRenderer(p: RendererProps) {
   return (
     <Container ref={$scroller}>
       {items.map((item, i) => (
-        <GopherItem key={i} item={item} visitUrl={p.visitUrl}/>
+        <GopherItem key={i} item={item} linkTarget={p.linkTarget} visitUrl={p.visitUrl}/>
       ))}
     </Container>
   );
@@ -67,38 +68,24 @@ const Container = styled.div`
 
 export function GopherItem(p: {
   item: Gopher.Item,
+  linkTarget?: string,
   visitUrl: RendererProps['visitUrl'],
 }) {
   const {item, visitUrl} = p;
   const {type, label, url} = item;
   if (type == null || type === '.') return null;
+
   const Icon = ICON_MAP[type];
-
   const isLinked = !('i37'.includes(type));
-  const visit = React.useCallback((e: React.MouseEvent) => {
-    visitUrl(url!, {mode: (
-      e.metaKey && e.shiftKey ? 'tab' :
-      e.metaKey ? 'backgroundTab' :
-      e.shiftKey ? 'replace' :
-      'push'
-    )});
-  }, [visitUrl, url]);
-
   const isSearch = (type === '7');
+
   const search = React.useCallback((e) => {
     if (e.key !== 'Enter') return;
     const query = (e.target as HTMLInputElement).value.trim();
-    if (!query) return;
-    const searchUrl = `${url}%09${query}`;
-    visitUrl(searchUrl, {mode: (
-      e.metaKey && e.shiftKey ? 'tab' :
-      e.metaKey ? 'backgroundTab' :
-      e.shiftKey ? 'replace' :
-      'push'
-    )});
+    if (query) visitUrl(`${url}%09${query}`, visitModeFromEvent(e));
   }, [visitUrl, url]);
 
-  return <Line data-type={type} data-link={isLinked} onClick={isLinked? visit : undefined}>
+  let content = <Line data-type={type} data-link={isLinked}>
     {Icon? <LineIcon><Icon size={20}/></LineIcon> : null}
     {isSearch ? (
       <LineSearchField type="search" autoComplete="on" placeholder={label} onKeyDown={search}/>
@@ -106,7 +93,15 @@ export function GopherItem(p: {
       <LineTitle>{label || ' '}</LineTitle>
     )}
   </Line>;
+
+  // FIXME huge horiz linked padding
+  if (isLinked && !isSearch) {
+    content = <LineLink href={url} target={p.linkTarget}>{content}</LineLink>;
+  }
+
+  return content;
 }
+
 
 const Line = styled.div`
   position: relative;
@@ -127,12 +122,7 @@ const Line = styled.div`
   }
 
   &[data-type="i"] {
-    padding: 0 48px;
-  }
-
-  &[data-type="i"] + &:not([data-type="i"]),
-  &:not([data-type="i"]) + &[data-type="i"] {
-    margin-top: 8px;
+    padding: 8px 48px;
   }
 `;
 
@@ -145,6 +135,11 @@ const LineIcon = styled.div`
 
 const LineTitle = styled.div`
   white-space: pre-wrap;
+`;
+
+const LineLink = styled.a`
+  display: contents;
+  text-decoration: none;
 `;
 
 const LineSearchField = styled.input`

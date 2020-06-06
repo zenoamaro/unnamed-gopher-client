@@ -19,30 +19,34 @@ export default function TabView(p: {
     p.createTab(url, select);
   }, [p.createTab]);
 
-  const refreshThisTab = React.useCallback(() => {
+  const refreshTab = React.useCallback(() => {
     if (tab) remoteAction('refreshTab', tab.id);
   }, [tab.id]);
+
+  const navigate = React.useCallback((url: string, mode: string) => {
+    remoteAction('visit', url, mode);
+  }, []);
 
   const navigateThisTab = React.useCallback((url: string, at?: number) => {
     if (tab) remoteAction('navigateTab', tab.id, url, at);
   }, [tab.id]);
 
-  const navigateThisTabBack = React.useCallback(() => {
+  const navigateBack = React.useCallback(() => {
     if (tab) remoteAction('navigateTabBack', tab.id);
   }, [tab.id]);
 
-  const navigateThisTabForward = React.useCallback(() => {
+  const navigateForward = React.useCallback(() => {
     if (tab) remoteAction('navigateTabForward', tab.id);
   }, [tab.id]);
 
   const openSettings = React.useCallback(() => {}, []);
 
   useShortcuts(React.useCallback((e: KeyboardEvent) => {
-    if (e.metaKey && e.key === 'r') refreshThisTab();
-    else if (e.metaKey && e.key === 'ArrowLeft') navigateThisTabBack();
-    else if (e.metaKey && e.key === 'ArrowRight') navigateThisTabForward();
+    if (e.metaKey && e.key === 'r') refreshTab();
+    else if (e.metaKey && e.key === 'ArrowLeft') navigateBack();
+    else if (e.metaKey && e.key === 'ArrowRight') navigateForward();
     else return true;
-  }, [refreshThisTab]));
+  }, [refreshTab]));
 
   const canRefresh = tab.history.length > 0;
   const canNavigateBack = tab.historyIndex > 0;
@@ -54,11 +58,11 @@ export default function TabView(p: {
       canRefresh={canRefresh}
       canNavigateBack={canNavigateBack}
       canNavigateForward={canNavigateForward}
-      onRefresh={refreshThisTab}
+      onRefresh={refreshTab}
       onNewTab={createTab}
-      onNavigate={navigateThisTab}
-      onNavigateBack={navigateThisTabBack}
-      onNavigateForward={navigateThisTabForward}
+      onNavigate={navigate}
+      onNavigateBack={navigateBack}
+      onNavigateForward={navigateForward}
       onOpenSettings={openSettings}
     />
 

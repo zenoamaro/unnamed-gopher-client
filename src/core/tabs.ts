@@ -1,3 +1,4 @@
+import {shell} from 'electron';
 import {uniqueId} from 'lodash';
 import {update, withState} from './state';
 import {makePage, Page, navigatePage, refreshPage} from './pages';
@@ -81,4 +82,45 @@ export function navigateTabAt(tabId: string, at: number) {
     const tab = state.tabs[tabId];
     tab.historyIndex = Math.max(0, Math.min(at, tab.history.length-1));
   });
+}
+
+export type VisitMode = (
+  'push' |
+  'replace' |
+  'new-window' |
+  'background-tab' |
+  'foreground-tab' |
+  'save-to-disk' |
+  'other' |
+  'default'
+);
+
+export function visit(url: string, mode: VisitMode = 'push', at?: number) {
+  if (url.startsWith('file://')) return false;
+
+  if (!url.startsWith('gopher://')) {
+    shell.openExternal(url);
+    return true;
+  };
+
+  const {window, tab} = withState((state) => {
+    // FIXME HARDCODE windows
+    const window = state.windows.main;
+    const tab = state.tabs[window.selectedTabId];
+    return {window, tab};
+  });
+
+  if (mode === 'push' || mode === 'replace') {
+    navigateTab(tab.id, url, (at ?? tab.historyIndex) + (mode === 'replace'? 0 : 1));
+  } else if (mode === 'new-window' || mode === 'background-tab') {
+    createTab(window.id, url, false);
+  } else if (mode === 'foreground-tab') {
+    createTab(window.id, url, true);
+  } else if (mode === 'save-to-disk') {
+    //
+  } else {
+    navigateTab(tab.id, url);
+  }
+
+  return true;
 }

@@ -1,16 +1,14 @@
 import React from 'react';
+import {VisitMode} from 'core';
 
 export type Renderer = (props: RendererProps) => React.ReactElement | null;
 
 export interface RendererProps {
   url: string,
   scroll?: number,
+  linkTarget?: string,
   onScroll: (scroll: number) => void,
-  visitUrl: (url: string, options: VisitUrlOptions) => void,
-}
-
-export interface VisitUrlOptions {
-  mode: 'replace' | 'push' | 'tab' | 'backgroundTab',
+  visitUrl: (url: string, mode?: VisitMode) => void,
 }
 
 export default Renderer;

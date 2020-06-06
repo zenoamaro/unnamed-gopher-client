@@ -24,9 +24,7 @@ const Container = styled(Horizontal)<{
   height: 100%;
   align-items: center;
   justify-content: center;
-  width: ${p => p.zoomed ? 'auto' : '664px'};
   min-width: 664px;
-  max-width: 1200px;
   padding: 24px;
   overflow: auto scroll;
 `;
@@ -35,5 +33,5 @@ const Image = styled.img<{
   zoomed: boolean,
 }>`
   cursor: pointer;
-  max-width: ${p => p.zoomed ? 'auto' : '100%'};
+  max-width: ${p => p.zoomed ? '1200px' : '616px'};
 `;

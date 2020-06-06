@@ -12,7 +12,7 @@ export default function MarkdownRenderer(p: RendererProps) {
 
   return React.useMemo(() => (
     <Container ref={$scroller}>
-      <Content source={text}/>
+      <Content source={text} linkTarget={p.linkTarget} transformLinkUri={null}/>
     </Container>
   ), [p.url, text]);
 }

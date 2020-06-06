@@ -1,7 +1,7 @@
-import {shell} from 'electron';
 import React from 'react';
 import styled from 'styled-components';
-import {createTab} from 'core';
+import visitModeFromEvent from 'utils/visitModeFromEvent';
+import useShortcuts from 'utils/useShortcuts';
 import {Horizontal} from './Layout';
 import Button from './Button';
 
@@ -11,12 +11,11 @@ import {
   IoMdSettings,
   IoMdRefresh,
 } from 'react-icons/io'
-import useShortcuts from 'utils/useShortcuts';
 
 export default function NavBar(p: {
   url?: string,
   onNewTab(url?: string, select?: boolean): void,
-  onNavigate(url: string): void,
+  onNavigate(url: string, mode: string): void,
   onRefresh(): void,
   canRefresh: boolean,
   canNavigateBack: boolean,
@@ -42,10 +41,8 @@ export default function NavBar(p: {
     if (e.key === 'Enter') {
       const url = (e.target as HTMLInputElement).value.trim();
       if (!url) return;
-      if (url.includes('://') && !url?.startsWith('gopher://')) shell.openExternal(url);
-      else if (e.metaKey) p.onNewTab(url, e.shiftKey);
-      else p.onNavigate(url);
       $address.current?.blur();
+      p.onNavigate(url, visitModeFromEvent(e));
     } else if (e.key === 'Escape') {
       setTemporaryUrl(p.url);
       $address.current?.blur();

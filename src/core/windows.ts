@@ -1,5 +1,4 @@
 import {update, withState} from './state';
-import {Tab} from './tabs';
 import {arrayMoveMutate} from 'utils/array';
 
 export interface Window {
