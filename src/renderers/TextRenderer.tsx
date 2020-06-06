@@ -5,27 +5,17 @@ import * as Gopher from 'gopher';
 import {useFetchText} from 'utils/useFetch';
 import {useScrollRestoration} from 'utils/useScrollRestoration';
 import {RendererProps} from './Renderer';
-import MarkdownRenderer from './MarkdownRenderer';
 
 
 export default function TextRenderer(p: RendererProps) {
-  // FIXME Markdown causes double fetch
   const [text] = useFetchText(p.url);
   const $scroller = useScrollRestoration(p.scroll, p.onScroll, [text]);
 
-  const content = React.useMemo(() => {
-    const {pathname} = Gopher.parseGopherUrl(p.url);
-    const basename = Path.basename(pathname);
-    const ext = Path.extname(basename);
-
-    if (ext === '.md') return <MarkdownRenderer {...p}/>;
-
-    return <Container ref={$scroller}>
+  return React.useMemo(() => (
+    <Container ref={$scroller}>
       <Content>{text}</Content>
-    </Container>;
-  }, [p.url, text]);
-
-  return content;
+    </Container>
+  ), [p.url, text]);
 }
 
 const Container = styled.div`

@@ -3,28 +3,22 @@ import Bag from 'utils/Bag';
 
 import Renderer, {RendererProps} from './Renderer';
 import GopherRenderer from './GopherRenderer';
-import TextRenderer from './TextRenderer';
-import ImageRenderer from './ImageRenderer';
-import HTMLRenderer from './HTMLRenderer';
 import BinaryRenderer from './BinaryRenderer';
+import DocumentRenderer from 'renderers/DocumentRenderer';
+import TextRenderer from './TextRenderer';
+import HTMLRenderer from './HTMLRenderer';
+import ImageRenderer from './ImageRenderer';
 import AudioRenderer from './AudioRenderer';
 
 export const renderers: Bag<Renderer> = {
-  '0': TextRenderer,
-  '1': GopherRenderer,
-  '7': GopherRenderer,
+  '0': DocumentRenderer,
+  '17': GopherRenderer,
+  '4569': BinaryRenderer,
+  'Ipgj': ImageRenderer,
   'h': HTMLRenderer,
-  'I': ImageRenderer,
-  'p': ImageRenderer,
-  'g': ImageRenderer,
-  'j': ImageRenderer,
-  '4': BinaryRenderer,
-  '5': BinaryRenderer,
-  '6': BinaryRenderer,
-  '9': BinaryRenderer,
   's': AudioRenderer,
-  'default': TextRenderer,
-}
+  '*': TextRenderer,
+};
 
 export interface DetectRendererProps extends RendererProps {
   type: string,
@@ -32,7 +26,11 @@ export interface DetectRendererProps extends RendererProps {
 
 export function DetectRenderer(p: DetectRendererProps) {
   const {type, ...props} = p;
-  const Component = renderers[type] ?? renderers.default;
+
+  const Component = Object.entries(renderers).reduce((Match, [exts, Component]) => {
+    return exts.includes(type) ? Component : Match;
+  }, renderers['*']);
+
   return <Component {...props}/>;
 }
 

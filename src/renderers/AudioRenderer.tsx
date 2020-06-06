@@ -5,11 +5,11 @@ import {RendererProps} from './Renderer';
 
 
 export default function AudioRenderer(p: RendererProps) {
-  return (
+  return React.useMemo(() => (
     <Container>
       <audio controls src={p.url}/>
     </Container>
-  );
+  ), [p.url]);
 }
 
 const Container = styled(Horizontal)`

@@ -11,9 +11,9 @@ export default function HTMLRenderer(p: RendererProps) {
   const [text] = useFetchText(p.url);
   const $scroller = useScrollRestoration<HTMLIFrameElement>(p.scroll, p.onScroll, [text]);
 
-  return (
+  return React.useMemo(() => (
     <Frame srcDoc={text} sandbox="" ref={$scroller}/>
-  );
+  ), [p.url, text]);
 }
 
 const Frame = styled.iframe`

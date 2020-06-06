@@ -11,11 +11,11 @@ export default function ImageRenderer(p: RendererProps) {
     setZoomed(!zoomed);
   }, [zoomed, setZoomed]);
 
-  return (
+  return React.useMemo(() => (
     <Container zoomed={zoomed}>
       <Image src={p.url} zoomed={zoomed} onClick={toggleZoom}/>
     </Container>
-  );
+  ), [p.url, zoomed, toggleZoom]);
 }
 
 const Container = styled(Horizontal)<{

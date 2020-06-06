@@ -8,18 +8,13 @@ import {RendererProps} from './Renderer';
 
 export default function MarkdownRenderer(p: RendererProps) {
   const [text] = useFetchText(p.url);
+  const $scroller = useScrollRestoration(p.scroll, p.onScroll, [text]);
 
-  const markdown = React.useMemo(() => (
-    <Content source={text}/>
-  ), [text]);
-
-  const $scroller = useScrollRestoration(p.scroll, p.onScroll, [markdown]);
-
-  return (
+  return React.useMemo(() => (
     <Container ref={$scroller}>
-      {markdown}
+      <Content source={text}/>
     </Container>
-  );
+  ), [p.url, text]);
 }
 
 const Container = styled.div`
