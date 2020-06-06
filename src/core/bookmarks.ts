@@ -5,23 +5,21 @@ export interface Bookmark {
   id: string,
   title: string,
   url: string,
-  query?: string,
   type: string,
 }
 
-export function makeBookmark(title: string, type: string, url: string, query?: string): Bookmark {
+export function makeBookmark(title: string, type: string, url: string): Bookmark {
   return {
     id: uniqueId('bookmark'),
     title,
     url,
-    query,
     type,
   };
 }
 
-export function createBookmark(title: string, type: string, url: string, query?: string) {
+export function createBookmark(title: string, type: string, url: string) {
   update((state) => {
-    const bookmark = makeBookmark(title, type, url, query);
+    const bookmark = makeBookmark(title, type, url);
     state.bookmarks[bookmark.id] = bookmark;
   });
 }

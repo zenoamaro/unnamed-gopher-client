@@ -63,8 +63,6 @@ export default withRemoteState(function BrowserView(p: {
       return {id, icon:'IoIosStar', title:'Start page'}
     }
 
-    // const selector = [page.url, page.query].filter(Boolean).join('\t');
-
     const icon = (
       // resource?.state === 'loading' ? 'LoadingIcon' :
       // resource?.state === 'error' ? 'IoIosCloseCircleOutline' :

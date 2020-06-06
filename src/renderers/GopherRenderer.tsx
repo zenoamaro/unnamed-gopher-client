@@ -77,8 +77,9 @@ export function GopherItem(p: {
   const isSearch = (type === '7');
   const search = React.useCallback((e) => {
     if (e.key !== 'Enter') return;
-    const query = (e.target as HTMLInputElement).value;
-    const searchUrl = `${url}\t${query}`;
+    const query = (e.target as HTMLInputElement).value.trim();
+    if (!query) return;
+    const searchUrl = `${url}%09${query}`;
     visitUrl(searchUrl, {mode: (
       e.metaKey && e.shiftKey ? 'tab' :
       e.metaKey ? 'backgroundTab' :
@@ -90,7 +91,7 @@ export function GopherItem(p: {
   return <Line data-type={type} data-link={isLinked} onClick={isLinked? visit : undefined}>
     {Icon? <LineIcon><Icon size={20}/></LineIcon> : null}
     {isSearch ? (
-      <LineSearchField placeholder={label} onKeyDown={search}/>
+      <LineSearchField type="search" autoComplete="on" placeholder={label} onKeyDown={search}/>
     ) : (
       <LineTitle>{label || ' '}</LineTitle>
     )}

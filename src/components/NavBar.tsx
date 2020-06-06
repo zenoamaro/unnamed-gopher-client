@@ -41,16 +41,16 @@ export default function NavBar(p: {
   const submitAddress = React.useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       const url = (e.target as HTMLInputElement).value.trim();
+      if (!url) return;
       if (url.includes('://') && !url?.startsWith('gopher://')) shell.openExternal(url);
       else if (e.metaKey) p.onNewTab(url, e.shiftKey);
       else p.onNavigate(url);
-      setTemporaryUrl(p.url);
       $address.current?.blur();
     } else if (e.key === 'Escape') {
       setTemporaryUrl(p.url);
       $address.current?.blur();
     }
-  }, [p.onNavigate, p.onNewTab]);
+  }, [p.url, p.onNavigate, p.onNewTab]);
 
   useShortcuts(React.useCallback((e: KeyboardEvent) => {
     if (e.metaKey && e.key === 'l') {

@@ -51,7 +51,7 @@ export function navigateTab(tabId: string, url: string, at?: number, fresh = fal
     tab.history.push(page);
     tab.historyIndex = tab.history.length -1;
   });
-  navigatePage(tabId, page.id, url, undefined, fresh);
+  navigatePage(tabId, page.id, url, fresh);
 }
 
 export function refreshTab(tabId: string, at?: number) {
