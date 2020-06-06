@@ -6,10 +6,10 @@ import {Horizontal} from './Layout';
 import Button from './Button';
 
 import {
-  IoIosArrowBack,
-  IoIosArrowForward,
-  IoIosSettings,
-  IoIosRefresh,
+  IoMdArrowBack,
+  IoMdArrowForward,
+  IoMdSettings,
+  IoMdRefresh,
 } from 'react-icons/io'
 import useShortcuts from 'utils/useShortcuts';
 
@@ -62,15 +62,15 @@ export default function NavBar(p: {
 
   return <Container>
     <ToolbarButton disabled={!p.canNavigateBack} onClick={p.onNavigateBack}>
-      <IoIosArrowBack size={22}/>
+      <IoMdArrowBack size={22}/>
     </ToolbarButton>
 
     <ToolbarButton disabled={!p.canNavigateForward} onClick={p.onNavigateForward}>
-      <IoIosArrowForward size={22}/>
+      <IoMdArrowForward size={22}/>
     </ToolbarButton>
 
     <ToolbarButton disabled={!p.canRefresh} onClick={p.onRefresh}>
-      <IoIosRefresh size={22}/>
+      <IoMdRefresh size={22}/>
     </ToolbarButton>
 
     <AddressField
@@ -83,7 +83,7 @@ export default function NavBar(p: {
     />
 
     <ToolbarButton>
-      <IoIosSettings size={22} onClick={p.onOpenSettings}/>
+      <IoMdSettings size={22} onClick={p.onOpenSettings}/>
     </ToolbarButton>
   </Container>;
 }
