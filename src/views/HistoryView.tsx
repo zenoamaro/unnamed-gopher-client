@@ -25,9 +25,12 @@ export default function HistoryView(p: {
   }, [tab.id])
 
   React.useLayoutEffect(() => {
-    if (!$scroller.current) return;
-    const $pane = $scroller.current.children[tab!.historyIndex];
-    $pane?.scrollIntoView({behavior:'smooth', inline:'center'});
+    const $container = $scroller.current;
+    if (!$container) return;
+    const $pane = $container.children[tab!.historyIndex] as HTMLElement;
+    if (!$pane) return;
+    const left = $pane.offsetLeft - ($container.offsetWidth - $pane.offsetWidth) / 2;
+    $container.scrollTo({behavior:'smooth', left});
   }, [$scroller.current, tab.historyIndex])
 
   const [onScroll] = useDebouncedCallback(() => {
@@ -54,7 +57,7 @@ export default function HistoryView(p: {
         break;
       }
     }
-  }, 100);
+  }, 64);
 
   const pages = React.useMemo(() => (
     tab.history.map((page, i) => {
