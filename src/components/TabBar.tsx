@@ -47,8 +47,18 @@ const SortableTabs = SortableContainer((p: {
   createTab(): void,
   closeTab(tabId: string): void,
 }) => {
-  return <TabContainer>
-    {p.tabs.map((tab, i) => (
+  const {tabs, selectedTabId} = p;
+
+  const $container = React.useRef<HTMLDivElement|null>(null);
+
+  React.useLayoutEffect(() => {
+    if (!tabs.length || !$container.current) return;
+    const index = tabs.findIndex(t => t.id === selectedTabId);
+    $container.current.children[index].scrollIntoView({behavior:'smooth'});
+  }, [tabs, selectedTabId]);
+
+  return <TabContainer ref={$container}>
+    {tabs.map((tab, i) => (
       <SortableTab {...p} tab={tab} key={tab.id} index={i}/>
     ))}
   </TabContainer>;
@@ -76,13 +86,22 @@ const SortableTab = SortableElement((p: {
 
 const Container = styled(Horizontal)`
   -webkit-app-region: drag;
+  overflow: hidden;
   height: 38px;
   padding: 0 8px 0 80px;
-  border-bottom: solid thin #ddd;
   background: #f0f0f0;
+  box-shadow: inset 0 -1px 0 #ddd;
 `;
 
-const TabContainer = styled(Horizontal)``;
+const TabContainer = styled(Horizontal)`
+  flex: 0 1 auto;
+  overflow-x: auto;
+
+  ::-webkit-scrollbar {
+    height: 0;
+    background: transparent;
+  }
+`;
 
 const Tab = styled(Horizontal)<{
   selected?: boolean,
@@ -96,7 +115,6 @@ const Tab = styled(Horizontal)<{
   border-left: solid thin transparent;
   border-right: solid thin transparent;
   border-color: ${p => p.selected? '#ddd' : 'transparent'};
-  box-shadow: ${p => p.selected? '0 2px 0 -1px white' : 'none'};
 `;
 
 const TabTitle = styled.div`
