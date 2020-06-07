@@ -1,8 +1,7 @@
 import 'v8-compile-cache';
 import {app, protocol, BrowserWindow, ipcMain} from 'electron';
-import {gopherProtocolScheme, gopherProtocolHandler} from 'protocols/gopher';
+import protocols from 'protocols';
 import * as Core from 'core';
-import {createTab} from 'core';
 
 let window: BrowserWindow;
 
@@ -46,16 +45,25 @@ function createWindow() {
   window.loadFile(`build/app.html`);
 }
 
-protocol.registerSchemesAsPrivileged([
-  gopherProtocolScheme,
-]);
+function registerProtocolSchemes() {
+  protocol.registerSchemesAsPrivileged(
+    protocols.map(p => p.scheme),
+  );
+}
+
+function registerProtocolHandlers() {
+  for (let {scheme, handler} of protocols) {
+    protocol.registerStreamProtocol(scheme.scheme, handler);
+  }
+}
 
 // FIXME MacOS-only
 app.on('open-url', (e, url) => {
-  createTab('main', url, true);
+  Core.createTab('main', url, true);
 });
+
+registerProtocolSchemes();
 
 app.whenReady()
   .then(createWindow)
-  .then(() => protocol.registerStreamProtocol(gopherProtocolScheme.scheme, gopherProtocolHandler))
-
+  .then(registerProtocolHandlers)
