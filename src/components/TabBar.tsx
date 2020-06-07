@@ -34,7 +34,7 @@ export default function TabBar(p: {
       distance={5}
     />
 
-    <ToolbarButton onClick={createTab}>
+    <ToolbarButton title="Create a new tab" onClick={createTab}>
       <Icons.IoIosAdd size={22}/>
     </ToolbarButton>
   </Container>;
@@ -76,10 +76,10 @@ const SortableTab = SortableElement((p: {
   const Icon = tab.icon === 'LoadingIcon' ? LoadingIcon : Icons[tab.icon];
 
   return (
-    <Tab key={tab.id} selected={tab.id === selectedTabId} onClick={() => p.selectTab(tab.id)}>
+    <Tab key={tab.id} selected={tab.id === selectedTabId} title={tab.title} onClick={() => p.selectTab(tab.id)}>
       {Icon? <Icon size={16}/> : null}
       <TabTitle>{tab.title}</TabTitle>
-      <Icons.IoIosClose size={22} onClick={(e) => {p.closeTab(tab.id); e.stopPropagation()}}/>
+      <Icons.IoIosClose size={22} title="Close this tab" onClick={(e) => {p.closeTab(tab.id); e.stopPropagation()}}/>
     </Tab>
   );
 });

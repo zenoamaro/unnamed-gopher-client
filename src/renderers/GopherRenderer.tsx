@@ -96,7 +96,7 @@ export function GopherItem(p: {
 
   // FIXME huge horiz linked padding
   if (isLinked && !isSearch) {
-    content = <LineLink href={url} target={p.linkTarget}>{content}</LineLink>;
+    content = <LineLink title={`Open ${url}`} href={url} target={p.linkTarget}>{content}</LineLink>;
   }
 
   return content;

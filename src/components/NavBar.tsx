@@ -57,15 +57,15 @@ export default function NavBar(p: {
   }, []));
 
   return <Container>
-    <ToolbarButton disabled={!p.canNavigateBack} onClick={p.onNavigateBack}>
+    <ToolbarButton title="Show the previous page" disabled={!p.canNavigateBack} onClick={p.onNavigateBack}>
       <IoMdArrowBack size={22}/>
     </ToolbarButton>
 
-    <ToolbarButton disabled={!p.canNavigateForward} onClick={p.onNavigateForward}>
+    <ToolbarButton title="Show the next page" disabled={!p.canNavigateForward} onClick={p.onNavigateForward}>
       <IoMdArrowForward size={22}/>
     </ToolbarButton>
 
-    <ToolbarButton disabled={!p.canRefresh} onClick={p.onRefresh}>
+    <ToolbarButton title="Reload this page" disabled={!p.canRefresh} onClick={p.onRefresh}>
       <IoMdRefresh size={22}/>
     </ToolbarButton>
 
@@ -78,7 +78,7 @@ export default function NavBar(p: {
       onKeyDown={submitAddress}
     />
 
-    <ToolbarButton>
+    <ToolbarButton title="Open settings (Not implemented)">
       <IoMdSettings size={22} onClick={p.onOpenSettings}/>
     </ToolbarButton>
   </Container>;
