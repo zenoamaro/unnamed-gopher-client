@@ -47,7 +47,7 @@ export default withRemoteState(function BrowserView(p: {
     else if (e.metaKey && e.key === 'w') remoteAction('destroyTab', window.selectedTabId);
     else if (e.metaKey && e.key === '[') remoteAction('selectPreviousTab', window.id);
     else if (e.metaKey && e.key === ']') remoteAction('selectNextTab', window.id);
-    else return true;
+    else return false;
   }, [window.id, window.selectedTabId]));
 
   const tabBarTabs = React.useMemo(() => tabs.map((tab) => {

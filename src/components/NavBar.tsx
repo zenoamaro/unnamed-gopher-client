@@ -53,8 +53,7 @@ export default function NavBar(p: {
     if (e.metaKey && e.key === 'l') {
       $address.current?.focus();
       $address.current?.select();
-    }
-    else return true;
+    } else return false;
   }, []));
 
   return <Container>

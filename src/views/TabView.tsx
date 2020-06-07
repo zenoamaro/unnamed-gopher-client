@@ -45,7 +45,7 @@ export default function TabView(p: {
     if (e.metaKey && e.key === 'r') refreshTab();
     else if (e.metaKey && e.key === 'ArrowLeft') navigateBack();
     else if (e.metaKey && e.key === 'ArrowRight') navigateForward();
-    else return true;
+    else return false;
   }, [refreshTab]));
 
   const canRefresh = tab.history.length > 0;
