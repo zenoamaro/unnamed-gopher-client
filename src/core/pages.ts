@@ -1,10 +1,13 @@
 import {URL} from 'url';
 import {uniqueId} from 'lodash';
 import * as Gopher from 'gopher';
-import {update, withState} from './state';
-import {createRecent} from './recents';
-import {capitalized} from 'utils/text';
 import {clearCachedURL} from 'protocols/gopher';
+import {capitalized} from 'utils/text';
+import {update} from './state';
+import {createRecent} from './recents';
+
+
+export const DEFAULT_SEARCH_ENGINE_URL = `gopher://gopher.floodgap.com/7/v2/vs`;
 
 export interface Page {
   id: string,
@@ -37,13 +40,6 @@ export function scrollPage(tabId: string, pageId: string, scroll: number) {
 }
 
 export function navigatePage(tabId: string, pageId: string, url: string, fresh = false) {
-  // TODO Doesn't belong here
-  try {
-    new URL(url);
-  } catch (err) {
-    url = `gopher://gopher.floodgap.com/7/v2/vs%09${url}`;
-  }
-
   const parsedUrl = Gopher.parseGopherUrl(url);
 
   const title = [
@@ -52,6 +48,7 @@ export function navigatePage(tabId: string, pageId: string, url: string, fresh =
   ].filter(Boolean).join(' - ');
 
   let changedUrl = false;
+
   update((state) => {
     const tab = state.tabs[tabId]!;
     const page = tab.history.find(p => p.id === pageId)!;
@@ -76,4 +73,21 @@ export function reloadPage(tabId: string, pageId: string) {
     clearCachedURL(page.url);
     page.timestamp = Date.now();
   });
+}
+
+export function isValidURL(url: string): boolean {
+  try {
+    new URL(url);
+    return true;
+  } catch (err) {
+    return false;
+  }
+}
+
+export function isSearchUrl(url: string): boolean {
+  return url.includes('%09');
+}
+
+export function makeSearchUrl(query: string): string {
+  return `${DEFAULT_SEARCH_ENGINE_URL}%09${query}`;
 }

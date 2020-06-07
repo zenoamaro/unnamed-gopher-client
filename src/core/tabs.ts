@@ -1,7 +1,7 @@
 import {shell} from 'electron';
 import {uniqueId} from 'lodash';
 import {update, withState} from './state';
-import {makePage, Page, navigatePage, reloadPage} from './pages';
+import {makePage, Page, navigatePage, reloadPage, isValidURL, makeSearchUrl} from './pages';
 
 
 export interface Tab {
@@ -17,6 +17,17 @@ export function makeTab(url?: string) {
     history: [],
   };
 }
+
+export type VisitMode = (
+  'push' |
+  'replace' |
+  'new-window' |
+  'background-tab' |
+  'foreground-tab' |
+  'save-to-disk' |
+  'other' |
+  'default'
+);
 
 export function createTab(windowId: string, url?: string, select = true, fresh = false) {
   const tab = makeTab(url);
@@ -84,22 +95,17 @@ export function navigateTabAt(tabId: string, at: number) {
   });
 }
 
-export type VisitMode = (
-  'push' |
-  'replace' |
-  'new-window' |
-  'background-tab' |
-  'foreground-tab' |
-  'save-to-disk' |
-  'other' |
-  'default'
-);
-
 export function visit(url: string, mode: VisitMode = 'push', at?: number) {
-  if (url.startsWith('file://')) return false;
+  // FIXME These checks are not performed in navigatePage
 
-  if (!url.startsWith('gopher://')) {
-    shell.openExternal(url);
+  if (!isValidURL(url)) {
+    url = makeSearchUrl(url);
+  } else if (url.startsWith('file://')) {
+    // FIXME hack, prevent file:// links altogether, except loading the app
+    return false;
+  } else if (!url.startsWith('gopher://')) {
+    // This might fail if no application handles this scheme
+    shell.openExternal(url).catch(() => {});
     return true;
   };
 
@@ -124,3 +130,4 @@ export function visit(url: string, mode: VisitMode = 'push', at?: number) {
 
   return true;
 }
+

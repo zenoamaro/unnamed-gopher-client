@@ -5,7 +5,7 @@ import {app} from 'electron';
 import intoStream from 'into-stream';
 import ReadableStreamClone from 'readable-stream-clone'
 import * as Gopher from 'gopher';
-import {withState} from 'core';
+import {withState, isSearchUrl} from 'core';
 import {Bookmark} from 'core/bookmarks';
 import {Recent} from 'core/recents';
 
@@ -30,16 +30,17 @@ export async function gopherProtocolHandler(
   callback: (stream: Electron.StreamProtocolResponse) => void,
 ) {
   const {url} = request;
-  const filename = getFilenameHash(url);
   const maxAge = getRequestMaxCacheAge(request);
 
   if (url.startsWith('gopher://start')) {
     return callback(streamResponse(requestStartPage()));
   } else if (url.startsWith('gopher://test')) {
     return callback(streamResponse(requestTestPage(url)));
-  } else if (!await shouldRequestFresh(filename, maxAge)) {
+  } else if (!await shouldRequestFresh(url, maxAge)) {
+    const filename = getFilenameHash(url);
     callback(streamResponse(FS.createReadStream(filename)));
   } else {
+    const filename = getFilenameHash(url);
     const gopherRequest = Gopher.request(url);
     const cacheOutput = new ReadableStreamClone(gopherRequest);
     const responseOutput = new ReadableStreamClone(gopherRequest);
@@ -91,10 +92,14 @@ export function getRequestMaxCacheAge(request: Electron.Request) {
   }
 }
 
-export async function shouldRequestFresh(filename: string, maxAge: number) {
+export async function shouldRequestFresh(url: string, maxAge: number) {
   if (maxAge === 0) return true;
 
+  // FIXME feels wrong to do this here
+  if (isSearchUrl(url)) return true; // Search URL
+
   try {
+    const filename = getFilenameHash(url);
     const stat = await FS.stat(filename);
     return (Date.now() - stat.mtimeMs) > (maxAge * 1000);
   } catch (err) {

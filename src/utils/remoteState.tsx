@@ -25,9 +25,7 @@ export function withRemoteState(Component: React.FC<{state: Core.State}>): React
   };
 }
 
-export function remoteAction(
-  action: keyof typeof Core,
-  ...args: Parameters<typeof Core[typeof action]>
-): ReturnType<typeof Core[typeof action]> {
+// FIXME try to do reflection here, or create an actual API
+export function remoteAction(action: keyof typeof Core, ...args: any[]): any {
   return ipcRenderer.send('action', action, ...args);
 }
