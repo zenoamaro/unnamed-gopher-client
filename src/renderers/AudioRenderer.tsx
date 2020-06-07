@@ -9,7 +9,7 @@ export default function AudioRenderer(p: RendererProps) {
     <Container>
       <audio controls src={p.url}/>
     </Container>
-  ), [p.url]);
+  ), [p.url, p.timestamp]);
 }
 
 const Container = styled(Horizontal)`

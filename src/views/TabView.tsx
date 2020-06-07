@@ -19,15 +19,15 @@ export default function TabView(p: {
     p.createTab(url, select);
   }, [p.createTab]);
 
-  const refreshTab = React.useCallback(() => {
-    if (tab) remoteAction('refreshTab', tab.id);
+  const reloadTab = React.useCallback(() => {
+    if (tab) remoteAction('reloadTab', tab.id);
   }, [tab.id]);
 
   const navigate = React.useCallback((url: string, mode: string) => {
     remoteAction('visit', url, mode);
   }, []);
 
-  const navigateThisTab = React.useCallback((url: string, at?: number) => {
+  const navigateTab = React.useCallback((url: string, at?: number) => {
     if (tab) remoteAction('navigateTab', tab.id, url, at);
   }, [tab.id]);
 
@@ -42,23 +42,23 @@ export default function TabView(p: {
   const openSettings = React.useCallback(() => {}, []);
 
   useShortcuts(React.useCallback((e: KeyboardEvent) => {
-    if (e.metaKey && e.key === 'r') refreshTab();
+    if (e.metaKey && e.key === 'r') reloadTab();
     else if (e.metaKey && e.key === 'ArrowLeft') navigateBack();
     else if (e.metaKey && e.key === 'ArrowRight') navigateForward();
     else return false;
-  }, [refreshTab]));
+  }, [reloadTab]));
 
-  const canRefresh = tab.history.length > 0;
+  const canReload = tab.history.length > 0;
   const canNavigateBack = tab.historyIndex > 0;
   const canNavigateForward = tab.historyIndex < tab.history.length -1;
 
   return <Container>
     <NavBar
       url={page?.url}
-      canRefresh={canRefresh}
+      canReload={canReload}
       canNavigateBack={canNavigateBack}
       canNavigateForward={canNavigateForward}
-      onRefresh={refreshTab}
+      onReload={reloadTab}
       onNewTab={createTab}
       onNavigate={navigate}
       onNavigateBack={navigateBack}
@@ -66,7 +66,7 @@ export default function TabView(p: {
       onOpenSettings={openSettings}
     />
 
-    <HistoryView tab={tab} onVisit={navigateThisTab}/>
+    <HistoryView tab={tab} onVisit={navigateTab}/>
   </Container>;
 }
 

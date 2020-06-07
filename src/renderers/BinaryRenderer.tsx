@@ -16,7 +16,7 @@ export default function BinaryRenderer(p: RendererProps) {
       <Label>{basename}</Label>
       <LinkButton href={p.url} download={basename}>Save to disk</LinkButton>
     </Container>;
-  }, [p.url]);
+  }, [p.url, p.timestamp]);
 }
 
 const Container = styled(Vertical)`

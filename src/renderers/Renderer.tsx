@@ -7,6 +7,7 @@ export interface RendererProps {
   url: string,
   scroll?: number,
   linkTarget?: string,
+  timestamp?: number,
   onScroll: (scroll: number) => void,
   visitUrl: (url: string, mode?: VisitMode) => void,
 }

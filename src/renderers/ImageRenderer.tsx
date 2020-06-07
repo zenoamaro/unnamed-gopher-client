@@ -15,7 +15,7 @@ export default function ImageRenderer(p: RendererProps) {
     <Container zoomed={zoomed}>
       <Image src={p.url} zoomed={zoomed} onClick={toggleZoom}/>
     </Container>
-  ), [p.url, zoomed, toggleZoom]);
+  ), [p.timestamp, p.url, zoomed, toggleZoom]);
 }
 
 const Container = styled(Horizontal)<{

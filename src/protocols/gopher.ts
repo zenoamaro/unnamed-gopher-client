@@ -30,8 +30,8 @@ export async function gopherProtocolHandler(
   callback: (stream: Electron.StreamProtocolResponse) => void,
 ) {
   const {url} = request;
-  const filename = getFilenameHash(request);
-  const maxAge = getMaxCacheAge(request);
+  const filename = getFilenameHash(url);
+  const maxAge = getRequestMaxCacheAge(request);
 
   if (url.startsWith('gopher://start')) {
     return callback(streamResponse(requestStartPage()));
@@ -57,15 +57,26 @@ export function streamResponse(stream: NodeJS.ReadableStream): Electron.StreamPr
   };
 }
 
-export function getFilenameHash(request: Electron.Request) {
-  const {url} = request;
+export function clearCachedURL(url: string) {
+  // Sync to be atomic. Hopefully not expensive
+  const filename = getFilenameHash(url);
+  try {FS.removeSync(filename)} finally {};
+}
+
+export async function clearCache() {
+  // Sync to be atomic. Hopefully not expensive
+  try {FS.removeSync(CACHE_DIR)} finally {};
+  FS.ensureDirSync(CACHE_DIR);
+}
+
+export function getFilenameHash(url: string) {
   const parsedUrl = Gopher.parseGopherUrl(url);
   const extname = Path.extname(parsedUrl.pathname) || '.gopher';
   const fileId = Crypto.createHash('sha256').update(url).digest('hex');
   return Path.join(CACHE_DIR, `${fileId}${extname}`);
 }
 
-export function getMaxCacheAge(request: Electron.Request) {
+export function getRequestMaxCacheAge(request: Electron.Request) {
   const cache = request.headers['Cache-Control'];
 
   if (!cache) {

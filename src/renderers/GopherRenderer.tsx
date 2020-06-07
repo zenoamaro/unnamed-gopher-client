@@ -29,7 +29,7 @@ const ICON_MAP: Bag<React.FC<{size: number}>> = {
 };
 
 export default function GopherRenderer(p: RendererProps) {
-  const [content] = useFetchText(p.url);
+  const [content] = useFetchText(p.url, undefined, [p.timestamp]);
 
   const items = React.useMemo(() => {
     let items = Gopher.parse(content);

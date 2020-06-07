@@ -19,6 +19,7 @@ export default function PageView(p: {
 
   return (
     <DetectRenderer
+      timestamp={page.timestamp}
       type={page.type}
       url={page.url}
       linkTarget={`${index}`}

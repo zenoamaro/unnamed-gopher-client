@@ -16,8 +16,8 @@ export default function NavBar(p: {
   url?: string,
   onNewTab(url?: string, select?: boolean): void,
   onNavigate(url: string, mode: string): void,
-  onRefresh(): void,
-  canRefresh: boolean,
+  onReload(): void,
+  canReload: boolean,
   canNavigateBack: boolean,
   canNavigateForward: boolean,
   onNavigateBack(): void,
@@ -65,7 +65,7 @@ export default function NavBar(p: {
       <IoMdArrowForward size={22}/>
     </ToolbarButton>
 
-    <ToolbarButton title="Reload this page" disabled={!p.canRefresh} onClick={p.onRefresh}>
+    <ToolbarButton title="Reload this page" disabled={!p.canReload} onClick={p.onReload}>
       <IoMdRefresh size={22}/>
     </ToolbarButton>
 

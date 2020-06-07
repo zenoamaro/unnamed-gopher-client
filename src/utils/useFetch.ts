@@ -4,6 +4,7 @@ import {useLoadEffect} from 'utils/useLoadEffect';
 export function useFetchText(
   url: RequestInfo,
   options?: RequestInit,
+  deps: readonly any[] = [],
 ): [string, boolean, Error|void] {
   let currentContent = '';
   const [content, setContent] = React.useState(currentContent);
@@ -23,7 +24,7 @@ export function useFetchText(
       setContent(currentContent);
       if (done) break;
     }
-  }, [url]);
+  }, [url, ...deps]);
 
   return [content, loading, error];
 }

@@ -4,6 +4,7 @@ import * as Gopher from 'gopher';
 import {update, withState} from './state';
 import {createRecent} from './recents';
 import {capitalized} from 'utils/text';
+import {clearCachedURL} from 'protocols/gopher';
 
 export interface Page {
   id: string,
@@ -11,6 +12,7 @@ export interface Page {
   url: string,
   type: string,
   scroll: number,
+  timestamp: number,
 }
 
 export function makePage(title: string, url: string): Page {
@@ -20,6 +22,7 @@ export function makePage(title: string, url: string): Page {
     url,
     type: '1',
     scroll: 0,
+    timestamp: 0,
   };
 }
 
@@ -52,7 +55,10 @@ export function navigatePage(tabId: string, pageId: string, url: string, fresh =
   update((state) => {
     const tab = state.tabs[tabId]!;
     const page = tab.history.find(p => p.id === pageId)!;
-    if (page.url !== url) changedUrl = true;
+    if (page.url !== url) {
+      page.timestamp = Date.now();
+      changedUrl = true;
+    }
     page.title = title;
     page.type = parsedUrl.type || '1';
     page.url = url;
@@ -63,10 +69,11 @@ export function navigatePage(tabId: string, pageId: string, url: string, fresh =
   }
 }
 
-export function refreshPage(tabId: string, pageId: string) {
-  withState((state) => {
+export function reloadPage(tabId: string, pageId: string) {
+  update((state) => {
     const tab = state.tabs[tabId]!;
     const page = tab.history.find(p => p.id === pageId)!;
-    navigatePage(tabId, pageId, page.url, true);
+    clearCachedURL(page.url);
+    page.timestamp = Date.now();
   });
 }

@@ -7,7 +7,7 @@ import {RendererProps} from './Renderer';
 
 
 export default function HTMLRenderer(p: RendererProps) {
-  const [text] = useFetchText(p.url);
+  const [text] = useFetchText(p.url, undefined, [p.timestamp]);
   const $scroller = useScrollRestoration<HTMLIFrameElement>(p.scroll, p.onScroll, [text]);
 
   const captureClick = React.useCallback((e: MouseEvent) => {
@@ -26,7 +26,7 @@ export default function HTMLRenderer(p: RendererProps) {
   const content = React.useMemo(() => {
     const doc = `<base href="${p.url}">${text}`;
     return <Frame srcDoc={doc} sandbox="" ref={$scroller} onLoad={captureFrameEvents}/>
-  }, [p.url, p.linkTarget, text]);
+  }, [p.linkTarget, text]);
 
   return content;
 }

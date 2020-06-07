@@ -1,21 +1,19 @@
-import Path from 'path';
 import React from 'react';
 import styled from 'styled-components';
-import * as Gopher from 'gopher';
 import {useFetchText} from 'utils/useFetch';
 import {useScrollRestoration} from 'utils/useScrollRestoration';
 import {RendererProps} from './Renderer';
 
 
 export default function TextRenderer(p: RendererProps) {
-  const [text] = useFetchText(p.url);
+  const [text] = useFetchText(p.url, undefined, [p.timestamp]);
   const $scroller = useScrollRestoration(p.scroll, p.onScroll, [text]);
 
   return React.useMemo(() => (
     <Container ref={$scroller}>
       <Content>{text}</Content>
     </Container>
-  ), [p.url, text]);
+  ), [text]);
 }
 
 const Container = styled.div`

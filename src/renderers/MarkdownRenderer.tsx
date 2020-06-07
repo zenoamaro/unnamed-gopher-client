@@ -7,14 +7,14 @@ import {RendererProps} from './Renderer';
 
 
 export default function MarkdownRenderer(p: RendererProps) {
-  const [text] = useFetchText(p.url);
+  const [text] = useFetchText(p.url, undefined, [p.timestamp]);
   const $scroller = useScrollRestoration(p.scroll, p.onScroll, [text]);
 
   return React.useMemo(() => (
     <Container ref={$scroller}>
       <Content source={text} linkTarget={p.linkTarget} transformLinkUri={null}/>
     </Container>
-  ), [p.url, text]);
+  ), [p.linkTarget, text]);
 }
 
 const Container = styled.div`

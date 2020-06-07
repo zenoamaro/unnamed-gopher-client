@@ -1,7 +1,7 @@
 import {shell} from 'electron';
 import {uniqueId} from 'lodash';
 import {update, withState} from './state';
-import {makePage, Page, navigatePage, refreshPage} from './pages';
+import {makePage, Page, navigatePage, reloadPage} from './pages';
 
 
 export interface Tab {
@@ -55,12 +55,12 @@ export function navigateTab(tabId: string, url: string, at?: number, fresh = fal
   navigatePage(tabId, page.id, url, fresh);
 }
 
-export function refreshTab(tabId: string, at?: number) {
+export function reloadTab(tabId: string, at?: number) {
   const page = withState((state) => {
     const tab = state.tabs[tabId];
     return tab.history[at ?? tab.historyIndex];
   });
-  if (page) refreshPage(tabId, page.id);
+  if (page) reloadPage(tabId, page.id);
 }
 
 export function navigateTabBack(tabId: string) {
