@@ -119,7 +119,7 @@ const Tab = styled(Horizontal)<{
 
 const TabTitle = styled.div`
   display: inline-block;
-  max-width: 200px;
+  width: 150px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
