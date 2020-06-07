@@ -2,6 +2,7 @@ import 'v8-compile-cache';
 import {app, protocol, BrowserWindow, ipcMain} from 'electron';
 import {gopherProtocolScheme, gopherProtocolHandler} from 'protocols/gopher';
 import * as Core from 'core';
+import {createTab} from 'core';
 
 let window: BrowserWindow;
 
@@ -50,9 +51,8 @@ protocol.registerSchemesAsPrivileged([
 ]);
 
 // FIXME MacOS-only
-// FIXME Needs to wait for app to be ready
 app.on('open-url', (e, url) => {
-  window?.webContents.send('deep-link', url);
+  createTab('main', url, true);
 });
 
 app.whenReady()

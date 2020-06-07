@@ -1,4 +1,3 @@
-import {ipcRenderer} from 'electron';
 import React from 'react';
 import styled from 'styled-components';
 import {State} from 'core';
@@ -34,12 +33,6 @@ export default withRemoteState(function BrowserView(p: {
 
   const destroyTab = React.useCallback((tabId: string) => {
     remoteAction('destroyTab', tabId);
-  }, []);
-
-  React.useEffect(() => {
-    ipcRenderer.on('deep-link', function (e, url) {
-      remoteAction('createTab', 'main', url);
-    });
   }, []);
 
   useShortcuts(React.useCallback((e: KeyboardEvent) => {
