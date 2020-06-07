@@ -41,12 +41,7 @@ export function scrollPage(tabId: string, pageId: string, scroll: number) {
 
 export function navigatePage(tabId: string, pageId: string, url: string, fresh = false) {
   const parsedUrl = Gopher.parseGopherUrl(url);
-
-  const title = [
-    parsedUrl.query ?? capitalized(parsedUrl.pathname.replace(/\/$/, '').split('/').slice(-1)[0]),
-    parsedUrl.hostname,
-  ].filter(Boolean).join(' - ');
-
+  const title = formatPageDisplayTitle(url);
   let changedUrl = false;
 
   update((state) => {
@@ -73,6 +68,16 @@ export function reloadPage(tabId: string, pageId: string) {
     clearCachedURL(page.url);
     page.timestamp = Date.now();
   });
+}
+
+export function formatPageDisplayTitle(url: string) {
+  if (url === 'gopher://start') return 'Start page';
+  else if (url === 'gopher://test') return 'Test page';
+
+  const parsedUrl = Gopher.parseGopherUrl(url);
+  const pathTitle = parsedUrl.query ??
+    capitalized(parsedUrl.pathname.replace(/\/$/, '').split('/').slice(-1)[0]);
+  return [pathTitle, parsedUrl.hostname].filter(Boolean).join(' - ');
 }
 
 export function isValidURL(url: string): boolean {

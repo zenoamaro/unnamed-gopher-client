@@ -52,8 +52,8 @@ export default withRemoteState(function BrowserView(p: {
 
     const page = history[historyIndex];
 
-    if (page.url === 'gopher://start') {
-      return {id, icon:'IoIosStar', title:'Start page'}
+    if (page.url.startsWith('gopher://start') || page.url.startsWith('gopher://test')) {
+      return {id, icon:'IoIosStar', title:page.title};
     }
 
     const icon = (

@@ -7,10 +7,10 @@ import protocols from 'protocols';
 import * as Core from 'core';
 
 
-let window: BrowserWindow;
+let wnd: BrowserWindow;
 
 function createWindow() {
-  window = new BrowserWindow({
+  wnd = new BrowserWindow({
     width: 1300,
     height: 800,
     titleBarStyle: 'hiddenInset',
@@ -19,20 +19,26 @@ function createWindow() {
     },
   });
 
-  window.webContents.on('new-window', (event, url, frame, disposition, options) => {
+  wnd.webContents.on('new-window', (event, url, frame, disposition, options) => {
     const at = (frame != null && frame != '') ? Number(frame) : undefined;
     const mode = (at != null && disposition === 'foreground-tab') ? 'push' : disposition;
     const visited = Core.visit(url, mode, at);
     if (visited) event.preventDefault();
   });
 
-  window.webContents.on('will-navigate', (event, url) => {
+  wnd.webContents.on('will-navigate', (event, url) => {
     const visited = Core.visit(url, 'push');
     if (visited) event.preventDefault();
   });
 
   Core.subscribe((state, patches) => {
-    window.webContents.send('state', state, patches);
+    wnd.webContents.send('state', state, patches);
+
+    // Update window title to focused tab/page
+    const window = state.windows.main;
+    const tab = state.tabs[window?.selectedTabId];
+    const page = tab?.history[tab.historyIndex];
+    if (page?.title !== wnd.getTitle()) wnd.setTitle(page?.title ?? 'New window');
   });
 
   ipcMain.on('state', (event) => {
@@ -46,7 +52,7 @@ function createWindow() {
     await Core[action](...args);
   });
 
-  window.loadFile(`build/app.html`);
+  wnd.loadFile(`build/app.html`);
 }
 
 function registerProtocolSchemes() {
