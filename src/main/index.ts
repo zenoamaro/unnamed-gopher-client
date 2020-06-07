@@ -1,7 +1,11 @@
-import 'v8-compile-cache';
+require('v8-compile-cache');
+require('immer').enablePatches();
+
 import {app, protocol, BrowserWindow, ipcMain} from 'electron';
+import installExtension, {REACT_DEVELOPER_TOOLS} from 'electron-devtools-installer';
 import protocols from 'protocols';
 import * as Core from 'core';
+
 
 let window: BrowserWindow;
 
@@ -27,8 +31,8 @@ function createWindow() {
     if (visited) event.preventDefault();
   });
 
-  Core.subscribe((state) => {
-    window.webContents.send('state', state);
+  Core.subscribe((state, patches) => {
+    window.webContents.send('state', state, patches);
   });
 
   ipcMain.on('state', (event) => {
@@ -57,6 +61,10 @@ function registerProtocolHandlers() {
   }
 }
 
+function installDevTools() {
+  installExtension(REACT_DEVELOPER_TOOLS)
+}
+
 // FIXME MacOS-only
 app.on('open-url', (e, url) => {
   Core.createTab('main', url, true);
@@ -65,5 +73,6 @@ app.on('open-url', (e, url) => {
 registerProtocolSchemes();
 
 app.whenReady()
-  .then(createWindow)
+  .then(installDevTools)
   .then(registerProtocolHandlers)
+  .then(createWindow)

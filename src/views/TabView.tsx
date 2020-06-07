@@ -27,10 +27,6 @@ export default function TabView(p: {
     remoteAction('visit', url, mode);
   }, []);
 
-  const navigateTab = React.useCallback((url: string, at?: number) => {
-    if (tab) remoteAction('navigateTab', tab.id, url, at);
-  }, [tab.id]);
-
   const navigateBack = React.useCallback(() => {
     if (tab) remoteAction('navigateTabBack', tab.id);
   }, [tab.id]);
@@ -66,7 +62,7 @@ export default function TabView(p: {
       onOpenSettings={openSettings}
     />
 
-    <HistoryView tab={tab} onVisit={navigateTab}/>
+    <HistoryView tab={tab}/>
   </Container>;
 }
 

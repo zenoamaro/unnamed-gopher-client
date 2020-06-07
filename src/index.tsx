@@ -1,4 +1,6 @@
-import 'v8-compile-cache';
+require('v8-compile-cache');
+require('immer').enablePatches();
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './views';

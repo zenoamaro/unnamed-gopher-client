@@ -1,12 +1,17 @@
 import {ipcRenderer, IpcRendererEvent} from 'electron';
 import React, {useEffect, useState} from 'react';
+import {Patch, applyPatches} from 'immer';
 import * as Core from 'core';
 
 export function useRemoteState(): Core.State | undefined {
   const [state, setState] = useState<Core.State>();
+  let pendingState: Core.State;
 
-  function handler(event: IpcRendererEvent, state: Core.State) {
-    setState(state);
+  function handler(event: IpcRendererEvent, newState: Core.State, patches?: Patch[]) {
+    setState(pendingState = (pendingState && patches) ?
+      applyPatches(pendingState, patches) :
+      newState
+    );
   }
 
   useEffect(() => {

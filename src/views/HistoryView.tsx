@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import {memoize} from 'lodash';
 import {Tab, VisitMode} from 'core';
 import {useDebouncedCallback} from 'use-debounce';
 import {remoteAction} from 'utils/remoteState';
@@ -7,11 +8,14 @@ import {Horizontal} from 'components/Layout';
 import PageView from './PageView';
 
 
+const createUrlVisitor = memoize((i: number) => (url: string, mode?: VisitMode) => {
+  remoteAction('visit', url, mode, i);
+});
+
 export default function HistoryView(p: {
   tab: Tab,
-  onVisit(url: string, at: number): void,
 }) {
-  const {tab, onVisit} = p;
+  const {tab} = p;
 
   const $scroller = React.useRef<HTMLDivElement>(null);
 
@@ -59,14 +63,12 @@ export default function HistoryView(p: {
   const pages = React.useMemo(() => (
     tab.history.map((page, i) => {
       const isCurrentPage = tab.history[tab.historyIndex].id === page.id;
-      function visitUrl(url: string, mode?: VisitMode) {
-        remoteAction('visit', url, mode, i);
-      }
+      const visitUrl = createUrlVisitor(i);
       return <Pane key={page.id} highlight={isCurrentPage}>
         <PageView tab={tab} page={page} visitUrl={visitUrl}/>
       </Pane>;
     })
-  ), [tab.history]);
+  ), [tab.history, tab.historyIndex]);
 
   return (
     <Container ref={$scroller} onScroll={onScroll}>

@@ -1,4 +1,4 @@
-import produce from 'immer';
+import produce, {Patch} from 'immer';
 import Bag from 'utils/Bag';
 import {fromPairs} from 'lodash';
 
@@ -41,32 +41,39 @@ let state: State = {
 export type Getter<T> = (state: State) => T;
 export type Updater = (state: State) => void;
 
+const collectedPatches: Patch[] = [];
 let nextUpdate: number | null;
 
-export function withState<T>(fn: Getter<T>): T {
-  return fn(state);
+export function withState<T>(receiver: Getter<T>): T {
+  return receiver(state);
 }
 
-export function update(fn: Updater): void {
-  state = produce(state, fn);
-
+export function update(producer: Updater): void {
+  state = produce(
+    state,
+    producer,
+    (patches) => collectedPatches.push(...patches),
+  );
   if (!nextUpdate) nextUpdate = setTimeout(() => {
+    for (let subscriber of subscribers) {
+      subscriber(state, collectedPatches);
+    }
     nextUpdate = null;
-    for (let fn of listeners) fn(state);
+    collectedPatches.splice(0);
   }, 16);
 }
 
 
 // Listeners ———————————————————————————————————————————————————————————————————
 
-export type Subscriber = (state: State) => void;
+export type Subscriber = (state: State, patches: Patch[]) => void;
 
-let listeners: Subscriber[] = [];
+let subscribers: Subscriber[] = [];
 
-export function subscribe(fn: Subscriber) {
-  listeners.push(fn);
+export function subscribe(subscriber: Subscriber) {
+  subscribers.push(subscriber);
 }
 
-export function unsubscribe(fn: Subscriber) {
-  listeners = listeners.filter(l => l !== fn);
+export function unsubscribe(subscriber: Subscriber) {
+  subscribers = subscribers.filter(l => l !== subscriber);
 }
