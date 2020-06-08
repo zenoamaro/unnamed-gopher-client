@@ -12,6 +12,14 @@ const createUrlVisitor = memoize((i: number) => (url: string, mode?: VisitMode) 
   remoteAction('visit', url, mode, i);
 });
 
+function scrollPane($container: HTMLElement | null, index: number, smooth: boolean) {
+  if (!$container) return;
+  const $pane = $container.children[index] as HTMLElement;
+  if (!$pane) return;
+  const left = $pane.offsetLeft - ($container.offsetWidth - $pane.offsetWidth) / 2;
+  $container.scrollTo({left, behavior: smooth? 'smooth' : 'auto'});
+}
+
 export default function HistoryView(p: {
   tab: Tab,
 }) {
@@ -20,19 +28,12 @@ export default function HistoryView(p: {
   const $scroller = React.useRef<HTMLDivElement>(null);
 
   React.useLayoutEffect(() => {
-    if (!$scroller.current) return;
-    const $pane = $scroller.current.children[tab!.historyIndex];
-    $pane?.scrollIntoView({behavior:'auto', inline:'center'});
-  }, [tab.id])
+    scrollPane($scroller?.current, tab.historyIndex, false);
+  }, [tab.id]);
 
   React.useLayoutEffect(() => {
-    const $container = $scroller.current;
-    if (!$container) return;
-    const $pane = $container.children[tab!.historyIndex] as HTMLElement;
-    if (!$pane) return;
-    const left = $pane.offsetLeft - ($container.offsetWidth - $pane.offsetWidth) / 2;
-    $container.scrollTo({behavior:'smooth', left});
-  }, [$scroller.current, tab.historyIndex])
+    scrollPane($scroller?.current, tab.historyIndex, true);
+  }, [tab.historyIndex]);
 
   const [onScroll] = useDebouncedCallback(() => {
     if (!$scroller.current) return;
@@ -54,7 +55,9 @@ export default function HistoryView(p: {
       const end = Math.abs(width - left - $pane.offsetWidth);
       const centering = Math.abs(end - start);
       if (start <= 1 || end <= 1 || centering <= 1) {
-        if (i !== tab!.historyIndex) remoteAction('navigateTabAt', tab!.id, i);
+        if (i !== tab!.historyIndex) {
+          remoteAction('navigateTabAt', tab!.id, i);
+        }
         break;
       }
     }
