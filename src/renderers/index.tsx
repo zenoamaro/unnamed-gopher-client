@@ -3,6 +3,7 @@ import Bag from 'utils/Bag';
 
 import Renderer, {RendererProps} from './Renderer';
 import GopherRenderer from './GopherRenderer';
+import GopherFolderRenderer from './GopherFolderRenderer';
 import BinaryRenderer from './BinaryRenderer';
 import DocumentRenderer from 'renderers/DocumentRenderer';
 import TextRenderer from './TextRenderer';
@@ -13,6 +14,7 @@ import AudioRenderer from './AudioRenderer';
 export const renderers: Bag<Renderer> = {
   '0': DocumentRenderer,
   '17': GopherRenderer,
+  'F': GopherFolderRenderer,
   '4569': BinaryRenderer,
   'Ipgj': ImageRenderer,
   'h': HTMLRenderer,

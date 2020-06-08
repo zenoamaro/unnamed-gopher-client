@@ -26,6 +26,7 @@ const ICON_MAP: Bag<React.FC<{size: number}>> = {
   'I': Icons.IoIosImage,
   'j': Icons.IoIosImage,
   'p': Icons.IoIosImage,
+  '?': Icons.IoIosHelpCircleOutline,
 };
 
 export default function GopherRenderer(p: RendererProps) {
@@ -94,7 +95,6 @@ export function GopherItem(p: {
     )}
   </Line>;
 
-  // FIXME huge horiz linked padding
   if (isLinked && !isSearch) {
     content = <LineLink title={`Open ${url}`} href={url} target={p.linkTarget}>{content}</LineLink>;
   }
@@ -128,7 +128,7 @@ const Line = styled.div`
 
 const LineIcon = styled.div`
   position: absolute;
-  top: 9px;
+  top: 8px;
   left: 16px;
   color: inherit;
 `;
