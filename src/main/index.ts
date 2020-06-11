@@ -1,16 +1,28 @@
 require('v8-compile-cache');
 require('immer').enablePatches();
 
-import {app, protocol, BrowserWindow, ipcMain} from 'electron';
+import {app, BrowserWindow, ipcMain} from 'electron';
 import installExtension, {REACT_DEVELOPER_TOOLS} from 'electron-devtools-installer';
-import protocols from 'protocols';
+import {registerProtocolSchemes, registerProtocolHandlers} from 'protocols';
 import * as Core from 'core';
 
 
-let wnd: BrowserWindow;
+start().catch((err) => {
+  console.error(err);
+});
+
+async function start() {
+  registerURLSchemeHandler();
+  registerProtocolSchemes();
+
+  await app.whenReady();
+  installExtension(REACT_DEVELOPER_TOOLS);
+  registerProtocolHandlers();
+  createWindow();
+}
 
 function createWindow() {
-  wnd = new BrowserWindow({
+  const wnd = new BrowserWindow({
     width: 1300,
     height: 800,
     titleBarStyle: 'hiddenInset',
@@ -55,30 +67,9 @@ function createWindow() {
   wnd.loadFile(`build/app.html`);
 }
 
-function registerProtocolSchemes() {
-  protocol.registerSchemesAsPrivileged(
-    protocols.map(p => p.scheme),
-  );
+function registerURLSchemeHandler() {
+  // FIXME MacOS-only
+  app.on('open-url', (e, url) => {
+    Core.createTab('main', url, true);
+  });
 }
-
-function registerProtocolHandlers() {
-  for (let {scheme, handler} of protocols) {
-    protocol.registerStreamProtocol(scheme.scheme, handler);
-  }
-}
-
-function installDevTools() {
-  installExtension(REACT_DEVELOPER_TOOLS)
-}
-
-// FIXME MacOS-only
-app.on('open-url', (e, url) => {
-  Core.createTab('main', url, true);
-});
-
-registerProtocolSchemes();
-
-app.whenReady()
-  .then(installDevTools)
-  .then(registerProtocolHandlers)
-  .then(createWindow)
