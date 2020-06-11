@@ -15,4 +15,11 @@ protocols:
     schemes: ["gopher"]
 
 mac:
-  category: ""
+  target: dmg
+  category: public.app-category.productivity
+
+win:
+  target: portable
+
+linux:
+  target: AppImage
