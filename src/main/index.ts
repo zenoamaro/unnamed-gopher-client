@@ -1,6 +1,7 @@
 require('v8-compile-cache');
 require('immer').enablePatches();
 
+import {platform} from 'os';
 import {app, BrowserWindow, ipcMain} from 'electron';
 import installExtension, {REACT_DEVELOPER_TOOLS} from 'electron-devtools-installer';
 import {registerProtocolSchemes, registerProtocolHandlers} from 'protocols';
@@ -25,7 +26,7 @@ function createWindow() {
   const wnd = new BrowserWindow({
     width: 1300,
     height: 800,
-    titleBarStyle: 'hiddenInset',
+    titleBarStyle: platform() === 'darwin' ? 'hiddenInset' : undefined,
     webPreferences: {
       nodeIntegration: true,
     },

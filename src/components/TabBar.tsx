@@ -13,6 +13,7 @@ export interface TabBarTab {
 }
 
 export default function TabBar(p: {
+  platform: string,
   tabs: TabBarTab[],
   selectedTabId: string,
   selectTab(tabId: string): void,
@@ -24,7 +25,7 @@ export default function TabBar(p: {
     p.createTab();
   }, [p.createTab]);
 
-  return <Container>
+  return <Container platform={p.platform}>
     <SortableTabs
       {...p}
       axis="x"
@@ -41,6 +42,7 @@ export default function TabBar(p: {
 }
 
 const SortableTabs = SortableContainer((p: {
+  platform: string,
   tabs: TabBarTab[],
   selectedTabId: string,
   selectTab(tabId: string): void,
@@ -88,13 +90,18 @@ const SortableTab = SortableElement((p: {
   );
 });
 
-const Container = styled(Horizontal)`
+const Container = styled(Horizontal)<{
+  platform: string,
+}>`
   -webkit-app-region: drag;
   overflow: hidden;
-  height: 38px;
-  padding: 0 8px 0 80px;
   background: #f0f0f0;
   box-shadow: inset 0 -1px 0 #ddd;
+
+  padding: 0 16px;
+  padding-left: ${p => p.platform === 'darwin' ? '80px' : '16px'};
+
+  height: ${p => p.platform === 'darwin' ? '38px' : '30px'};
 `;
 
 const TabContainer = styled(Horizontal)`

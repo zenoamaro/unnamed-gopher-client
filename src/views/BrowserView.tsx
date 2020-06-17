@@ -1,3 +1,4 @@
+import {platform} from 'os';
 import React from 'react';
 import styled from 'styled-components';
 import {State} from 'core';
@@ -73,6 +74,7 @@ export default withRemoteState(function BrowserView(p: {
 
   return <Container>
     <TabBar
+      platform={platform()}
       tabs={tabBarTabs}
       selectedTabId={window.selectedTabId}
       reorderTab={reorderWindowTab}
