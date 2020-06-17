@@ -1,40 +1,47 @@
 Unnamed Gopher Client
 =====================
 
-A modern [Gopher](https://en.wikipedia.org/wiki/Gopher_(protocol)) client for the twenty-twenties.
+A modern [Gopher](https://en.wikipedia.org/wiki/Gopher_(protocol)) desktop client for the twenty-twenties. [Help me name it!](#help-me-name-this-app)
 
-[Help me name this app!](#help-me-name-this-app)
+Written in Electron, TypeScript, and React.
+
+[<img src="https://i.imgur.com/qQ96FtZ.png">](https://imgur.com/a/miOTyl7)
+
+[More screenshots here](https://imgur.com/a/miOTyl7)
 
 
 Project Goals
 -------------
 
-The goal of this project is to create a client that helps people approach the Gopher community, and entices them to _stay for the ride_:
+The goal of this project is to create a client that attracts people to the Gopher community, and entices them to _stay for the ride_:
 
-- [ ] Suggest the most active Gopher communities to get started
+- [x] Suggest the most active Gopher communities to get started
+- [x] Make it easy to search the Gopherspace and start exploring
 - [ ] Aggregate phlogs into feeds to help following creators and giving them a bigger audience
-- [ ] Figure out a way to let users interact with creators
-- [ ] Make it easy to search the Gopherspace and start exploring
-- [ ] Show media inline, if desired
+- [ ] Curate the best and most active Gopherholes
+- [ ] Figure out a way to let users interact with creators, or show them support, without changing the Gopher experience
+- [ ] Show engaging media inline, if desired
 
 It aims to provide features that are _unique_ to the Gopher experience:
 
-- [ ] View pages as folders and files
+- [x] Multi-column drill-down navigation like Finder
+- [x] View pages as folders and files
 - [ ] Inline and tree navigation like Explorer
-- [ ] Multi-column drill-down navigation like Finder
 - [ ] Keyboard and number-based navigation
 
 And of course, all of the features that we have come to expect:
 
-- [ ] Tabs
-- [ ] Browsing history
-- [ ] Bookmarks and recently-visited
-- [ ] Downloads
-- [ ] Aggressive caching
-- [ ] Combined search and address bar
-- [ ] A welcome and start page
-- [ ] Deep link support
+- [x] Tabs
+- [x] Browsing history
+- [x] Recently visited pages
+- [x] Aggressive caching
+- [x] Downloads
+- [x] Combined search and address bar
+- [x] A welcome and start page
+- [ ] User bookmarks
 - [ ] Theming & Dark Mode
+- [ ] Deep link support (for all platforms)
+- [ ] Full drag and drop capabilities
 - [ ] Extensions for new Gopher types and Rendering modes
 - [ ] Security via TLS
 
@@ -42,9 +49,9 @@ And of course, all of the features that we have come to expect:
 Help me name this app
 ---------------------
 
-Challenge yourself to crack the hardest problem known to man: naming things!
+Challenge yourself to crack the hardest problem known to mankind: naming things!
 
-Help me find a short, memorable, and ideally cute or clever name for this project, and be forever immortalized through history!
+Help me find a short, memorable, and ideally cute or clever name for this project, and be forever immortalized through history.
 
 
 License
