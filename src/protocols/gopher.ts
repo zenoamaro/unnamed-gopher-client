@@ -132,14 +132,17 @@ export function requestStartPage() {
   });
 
   const data = [
-    `iSearch with your default search engine\t\t\t`,
+    `iSearch with Veronica-2\t\t\t`,
     `7Search\t/v2/vs\tgopher.floodgap.com\t70`,
     `i\t\t\t`,
-    `iYour bookmarks\t\t\t`,
+    `iGopher Communities\t\t\t`,
     ...bookmarks,
     `i\t\t\t`,
     `iRecently visited\t\t\t`,
     ...recents,
+    `i\t\t\t`,
+    `iYou're using the Unnamed Gopher Client\t\t\t`,
+    `hgithub.com/zenoamaro/unnamed-gopher-client\tURL:https://github.com/zenoamaro/unnamed-gopher-client\t\t`
   ].join('\n');
 
   return intoStream(data);

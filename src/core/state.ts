@@ -20,10 +20,12 @@ export interface State {
 const initialWindow = makeWindow([]);
 
 const initialBookmarks = fromPairs([
-  makeBookmark('Bitreich', '1', 'gopher://bitreich.org'),
   makeBookmark('Floodgap', '1', 'gopher://gopher.floodgap.com'),
   makeBookmark('SDF', '1', 'gopher://sdf.org'),
+  makeBookmark('Create a forum', '1', 'gopher://createaforum.com'),
+  makeBookmark('Tilde.land', '1', 'gopher://tilde.land'),
   makeBookmark('Quux', '1', 'gopher://quux.org'),
+  makeBookmark('Bitreich', '1', 'gopher://bitreich.org'),
 ].map(bookmark => [bookmark.id, bookmark]));
 
 let state: State = {
