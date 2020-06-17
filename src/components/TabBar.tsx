@@ -54,7 +54,11 @@ const SortableTabs = SortableContainer((p: {
   React.useLayoutEffect(() => {
     if (!tabs.length || !$container.current) return;
     const index = tabs.findIndex(t => t.id === selectedTabId);
-    $container.current.children[index].scrollIntoView({behavior:'smooth'});
+    // REFACTOR: Smells like hack
+    setTimeout(
+      () => $container.current!.children[index].scrollIntoView({behavior:'smooth'}),
+      16
+    );
   }, [tabs, selectedTabId]);
 
   return <TabContainer ref={$container}>
