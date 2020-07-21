@@ -26,7 +26,7 @@
   "dependencies": {
     "immer": "^6.0.9",
     "into-stream": "^5.1.1",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "multipipe": "^4.0.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
