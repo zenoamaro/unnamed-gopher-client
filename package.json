@@ -24,7 +24,7 @@
     "prepublishOnly": "npm run clean && npm run build && npm run test"
   },
   "dependencies": {
-    "immer": "^6.0.9",
+    "immer": "^8.0.1",
     "into-stream": "^5.1.1",
     "lodash": "^4.17.15",
     "multipipe": "^4.0.0",
